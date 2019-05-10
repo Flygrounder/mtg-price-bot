@@ -1,0 +1,44 @@
+name: Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.0
+  deploy:
+    needs:
+      - golangci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SOURCE: "."
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+          SCRIPT_AFTER: |
+            cd ${{ secrets.REMOTE_TARGET }}
+            cp .env.template .env
+            sed -i 's/@VK_CONFIRMATION@/${{ secrets.VK_CONFIRMATION }}/g' .env
+            sed -i 's/@VK_SECRET@/${{ secrets.VK_SECRET }}/g' .env
+            sed -i 's/@VK_TOKEN@/${{ secrets.VK_TOKEN }}/g' .env
+            sed -i 's/@TG_TOKEN@/${{ secrets.TG_TOKEN }}/g' .env
+            sed -i 's/@TG_SECRET@/${{ secrets.TG_SECRET }}/g' .env
+            sed -i 's/@TG_WEBHOOK_URL@/${{ secrets.TG_WEBHOOK_URL }}/g' .env
+            sed -i 's/@SCG_CLIENT_GUID@/${{ secrets.SCG_CLIENT_GUID }}/g' .env
+            docker compose up -d --build
