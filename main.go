@@ -11,5 +11,5 @@ func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	r := gin.Default()
 	r.POST("callback/message", vk.HandleMessage)
-	r.Run(":8000")
+	r.Run(":80")
 }

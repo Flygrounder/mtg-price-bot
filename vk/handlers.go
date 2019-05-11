@@ -8,6 +8,13 @@ import (
 
 const CARDSLIMIT = 8
 
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func HandleMessage(c *gin.Context) {
 	var req MessageRequest
 	c.BindJSON(&req)
@@ -24,7 +31,8 @@ func HandleMessage(c *gin.Context) {
 		Message(req.Object.UserId, "Карта не найдена")
 	} else {
 		prices, _ := cardsinfo.GetSCGPrices(cardName)
-		prices = prices[:CARDSLIMIT]
+		elements := min(CARDSLIMIT, len(prices))
+		prices = prices[:elements]
 		priceInfo := cardsinfo.FormatCardPrices(cardName, prices)
 		Message(req.Object.UserId, priceInfo)
 	}
