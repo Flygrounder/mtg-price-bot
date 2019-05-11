@@ -35,3 +35,13 @@ func TestGetCardByStringWrong(t *testing.T) {
 	name := cardsinfo.GetOriginalName("fwijefiwjfew")
 	assert.Equal(t, "", name)
 }
+
+func TestGetCardBySetId(t *testing.T) {
+	name := cardsinfo.GetNameByCardId("DOM", "207")
+	assert.Equal(t, "Teferi, Hero of Dominaria", name)
+}
+
+func TestGetCardBySetIdWrong(t *testing.T) {
+	name := cardsinfo.GetNameByCardId("DOM", "1207")
+	assert.Equal(t, "", name)
+}

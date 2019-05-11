@@ -110,7 +110,7 @@ func parsePrice(container *html.Node) float64 {
 }
 
 func parseLink(container *html.Node) string {
-	linkNodes := htmlquery.Find(container, "//td[contains(@class, 'search_results_2')]/a")
+	linkNodes := htmlquery.Find(container, "//td[contains(@class, 'search_results_1')]/b/a")
 	if len(linkNodes) == 0 {
 		return ""
 	}
