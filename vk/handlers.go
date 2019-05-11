@@ -11,6 +11,7 @@ func HandleMessage(c *gin.Context) {
 	c.BindJSON(&req)
 	if (req.Type == "confirmation") && (req.GroupId == GROUPID) {
 		c.String(http.StatusOK, CONFIRMATION_STRING)
+		return
 	}
 	if req.Secret != SECRET_KEY {
 		return
