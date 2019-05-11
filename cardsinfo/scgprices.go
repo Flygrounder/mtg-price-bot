@@ -27,6 +27,11 @@ func GetSCGPrices(name string) ([]CardPrice, error) {
 			continue
 		}
 		name := htmlquery.InnerText(nameNode)
+		editionNode := htmlquery.FindOne(node, "//td[contains(@class, 'search_results_2')]")
+		if editionNode == nil {
+			continue
+		}
+		edition := strings.Trim(htmlquery.InnerText(editionNode), "\n ")
 		priceNode := htmlquery.FindOne(node, "//td[contains(@class, 'search_results_9')]")
 		if priceNode == nil {
 			continue
@@ -36,9 +41,22 @@ func GetSCGPrices(name string) ([]CardPrice, error) {
 		if err != nil {
 			continue
 		}
+		linkNodes := htmlquery.Find(node, "//td[contains(@class, 'search_results_2')]/a")
+		if len(linkNodes) == 0 {
+			continue
+		}
+		linkNode := linkNodes[0]
+		var link string
+		for _, v := range linkNode.Attr {
+			if v.Key == "href" {
+				link = v.Val
+			}
+		}
 		obj := CardPrice{
-			Name:  name,
-			Price: price,
+			Name:    name,
+			Price:   price,
+			Edition: edition,
+			Link:    link,
 		}
 		prices = append(prices, obj)
 	}
