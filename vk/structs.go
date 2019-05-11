@@ -9,5 +9,5 @@ type MessageRequest struct {
 
 type UserMessage struct {
 	Body   string `json:"body"`
-	UserId int64  `json:"user_id"`
+	UserId int64  `json:"peer_id"`
 }
