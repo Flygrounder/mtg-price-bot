@@ -8,6 +8,6 @@ type MessageRequest struct {
 }
 
 type UserMessage struct {
-	Body   string `json:"body"`
+	Body   string `json:"text"`
 	UserId int64  `json:"peer_id"`
 }
