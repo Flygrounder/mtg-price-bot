@@ -1,8 +1,10 @@
 package vk
 
 type MessageRequest struct {
-	Object UserMessage `json:"object"`
-	Secret string      `json:"secret"`
+	Type    string      `json:"type"`
+	GroupId int64       `json:"group_id"`
+	Object  UserMessage `json:"object"`
+	Secret  string      `json:"secret"`
 }
 
 type UserMessage struct {
