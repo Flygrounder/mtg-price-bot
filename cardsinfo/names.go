@@ -23,13 +23,14 @@ func GetOriginalName(name string) string {
 	for i := range langs {
 		go getOriginalNameFromLang(name, langs[i], channel)
 	}
+	var res string
 	for i := 0; i < len(langs); i++ {
 		name := <-channel
 		if name != "" {
-			return name
+			res = name
 		}
 	}
-	return ""
+	return res
 }
 
 func getOriginalNameFromLang(name, lang string, channel chan string) {

@@ -27,12 +27,12 @@ func HandleMessage(c *gin.Context) {
 	case "confirmation":
 		handleConfirmation(c, &req)
 	case "message_new":
-		handleSearch(c, &req)
+		go handleSearch(c, &req)
+		c.String(http.StatusOK, "ok")
 	}
 }
 
 func handleSearch(c *gin.Context, req *MessageRequest) {
-	defer c.String(http.StatusOK, "ok")
 	cardName, err := getCardNameByCommand(req.Object.Body)
 	if err != nil {
 		Message(req.Object.UserId, "Некорректная команда")
