@@ -1,3 +1,4 @@
 mtg-price-vk
 */.swp
 vk/token.go
+vk/secrets.go
