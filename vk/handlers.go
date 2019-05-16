@@ -1,7 +1,9 @@
 package vk
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/flygrounder/mtg-price-vk/caching"
 	"github.com/flygrounder/mtg-price-vk/cardsinfo"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -39,12 +41,26 @@ func handleSearch(c *gin.Context, req *MessageRequest) {
 	} else if cardName == "" {
 		Message(req.Object.UserId, "Карта не найдена")
 	} else {
-		prices, _ := cardsinfo.GetSCGPrices(cardName)
+		prices := GetPrices(cardName)
 		elements := min(CARDSLIMIT, len(prices))
 		prices = prices[:elements]
 		priceInfo := cardsinfo.FormatCardPrices(cardName, prices)
 		Message(req.Object.UserId, priceInfo)
 	}
+}
+
+func GetPrices(cardName string) []cardsinfo.CardPrice {
+	client := caching.GetClient()
+	val, err := client.Get(cardName)
+	var prices []cardsinfo.CardPrice
+	if err != nil {
+		prices, _ = cardsinfo.GetSCGPrices(cardName)
+		serialized, _ := json.Marshal(prices)
+		client.Set(cardName, string(serialized))
+		return prices
+	}
+	json.Unmarshal([]byte(val), &prices)
+	return prices
 }
 
 func getCardNameByCommand(command string) (string, error) {
