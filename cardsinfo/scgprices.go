@@ -11,12 +11,17 @@ import (
 const SCGURL = "http://www.starcitygames.com/results?name="
 
 func GetSCGPrices(name string) ([]CardPrice, error) {
-	url := getSCGUrl(name)
+	preprocessedName := preprocessNameForSearch(name)
+	url := getSCGUrl(preprocessedName)
 	doc, err := htmlquery.LoadURL(url)
 	if err != nil {
 		return nil, err
 	}
 	return fetchPrices(doc)
+}
+
+func preprocessNameForSearch(name string) string {
+	return strings.Replace(name, "|", "", 1)
 }
 
 func fetchPrices(doc *html.Node) ([]CardPrice, error) {
