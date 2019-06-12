@@ -21,7 +21,7 @@ func GetSCGPrices(name string) ([]CardPrice, error) {
 }
 
 func preprocessNameForSearch(name string) string {
-	return strings.Replace(name, "|", "", 1)
+	return strings.Split(name, "|")[0]
 }
 
 func fetchPrices(doc *html.Node) ([]CardPrice, error) {
