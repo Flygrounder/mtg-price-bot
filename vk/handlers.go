@@ -3,8 +3,8 @@ package vk
 import (
 	"encoding/json"
 	"errors"
-	"github.com/flygrounder/mtg-price-vk/caching"
-	"github.com/flygrounder/mtg-price-vk/cardsinfo"
+	"github.com/flygrounder/go-mtg-vk/caching"
+	"github.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

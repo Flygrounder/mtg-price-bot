@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/flygrounder/mtg-price-vk/vk"
+	"github.com/flygrounder/go-mtg-vk/vk"
 	"github.com/gin-gonic/gin"
 	"math/rand"
 	"time"

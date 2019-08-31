@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/flygrounder/mtg-price-vk/cardsinfo"
+	"github.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

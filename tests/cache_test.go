@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/flygrounder/mtg-price-vk/caching"
+	"github.com/flygrounder/go-mtg-vk/caching"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
