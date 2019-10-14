@@ -4,6 +4,6 @@ import (
 	"time"
 )
 
-const HOST_NAME = "localhost:6379"
+const HOST_NAME = "redis:6379"
 const PASSWORD = ""
 const CACHE_EXPIRATION = time.Hour * 24
