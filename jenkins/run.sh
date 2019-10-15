@@ -5,7 +5,6 @@ sudo docker build -t $IMAGE_NAME .
 sudo docker run -d \
 	--restart always\
 	-p 8081:8080\
-	-p 80:80\
 	--privileged\
 	-v /var/run/docker.sock:/var/run/docker.sock\
 	-v jenkins_home_mtg_go:/var/lib/jenkins_home\
