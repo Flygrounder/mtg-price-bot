@@ -4,17 +4,17 @@ pipeline {
 	stages {
 		stage('Pull') {
 			steps {
-				git pull	
+				sh git pull	
 			}
 		}
 		stage('Test') {
 			steps {
-				./deploy.sh test
+				sh ./deploy.sh test
 			}
 		}
 		stage('Deploy') {
 			steps {
-				./deploy.sh prod
+				sh ./deploy.sh prod
 			}
 		}
 	}

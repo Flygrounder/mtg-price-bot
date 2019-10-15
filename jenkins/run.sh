@@ -7,6 +7,7 @@ sudo docker run -d \
 	-p 8081:8080\
 	--privileged\
 	-v /var/run/docker.sock:/var/run/docker.sock\
+	-v jenkins_home_mtg_go:/var/lib/jenkins_home\
 	--name $CONTAINER_NAME\
 	-e VK_TOKEN=$VK_TOKEN\
 	-e VK_SECRET_KEY=$VK_SECRET_KEY\
