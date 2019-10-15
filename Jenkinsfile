@@ -1,20 +1,19 @@
 pipeline {
 	agent any
-
 	stages {
 		stage('Pull') {
 			steps {
-				sh git pull	
+				sh 'git pull'
 			}
 		}
 		stage('Test') {
 			steps {
-				sh ./deploy.sh test
+				sh './deploy.sh test'
 			}
 		}
 		stage('Deploy') {
 			steps {
-				sh ./deploy.sh prod
+				sh './deploy.sh prod'
 			}
 		}
 	}
