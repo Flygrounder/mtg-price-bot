@@ -3,6 +3,9 @@ IMAGE_NAME="mtg_vk_go_jenkins_image"
 CONTAINER_NAME="mtg_vk_go_jenkins_container"
 sudo docker build -t $IMAGE_NAME .
 sudo docker run -d \
+	--restart always\
+	-p 8081:8080\
+	--privileged\
 	-v /var/run/docker.sock:/var/run/docker.sock\
 	--name $CONTAINER_NAME\
 	-e VK_TOKEN=$VK_TOKEN\
