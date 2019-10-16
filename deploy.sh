@@ -18,7 +18,7 @@ then
 	PROD_NETWORK_NAME="go_mtg_vk_prod_network"
 	sudo docker network create $PROD_NETWORK_NAME || true
 	PROD_REDIS_NAME="go_mtg_vk_prod_redis"
-	sudo docker run -d --restart always --network $PROD_NETWORK_NAME --name $PROD_REDIS_NAME redis
+	sudo docker run -d --net-alias redis --restart always --network $PROD_NETWORK_NAME --name $PROD_REDIS_NAME redis
 	PROD_IMAGE_NAME="go_mtg_vk_prod_image"
 	sudo docker build -t $PROD_IMAGE_NAME .
 	PROD_CONTAINER_NAME="go_mtg_vk_prod_container"
