@@ -1,0 +1,49 @@
+- hosts: server
+  remote_user: root
+  vars_prompt:
+    - name: vk_token
+      private: no
+      prompt: "Enter vk token"
+    - name: vk_secret_key
+      private: no
+      prompt: "Enter vk secret key"
+    - name: vk_group_id
+      private: no
+      prompt: "Enter vk group id"
+    - name: vk_confirmation_string
+      private: no
+      prompt: "Enter vk confirmation string"
+  tasks:
+    - name: Install git
+      apt:
+        name: git
+    - name: Install docker
+      snap:
+        name: docker
+    - name: Pull repository
+      git:
+        dest: ~/go-mtg-vk
+        repo: https://github.com/Flygrounder/go-mtg-vk.git
+    - name: Append vk_token to .bashrc
+      lineinfile:
+        line: "export VK_TOKEN=\"{{vk_token}}\""
+        path: ~/.bashrc
+    - name: Append vk_secret_key to .bashrc
+      lineinfile:
+        line: "export VK_SECRET_KEY=\"{{vk_secret_key}}\""
+        path: ~/.bashrc
+    - name: Append vk_group_id to .bashrc
+      lineinfile:
+        line: "export VK_GROUP_ID=\"{{vk_group_id}}\""
+        path: ~/.bashrc
+    - name: Append vk_confirmation_string to .bashrc
+      lineinfile:
+        line: "export VK_CONFIRMATION_STRING=\"{{vk_confirmation_string}}\""
+        path: ~/.bashrc
+    - name: Run jenkins
+      command: bash ~/go-mtg-vk/jenkins/run.sh
+      environment:
+        VK_TOKEN: "{{vk_token}}"
+        VK_SECRET_KEY: "{{vk_secret_key}}"
+        VK_GROUP_ID: "{{vk_group_id}}"
+        VK_CONFIRMATION_STRING: "{{vk_confirmation_string}}"
