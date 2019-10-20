@@ -20,6 +20,7 @@ then
 	sudo docker network create $PROD_NETWORK_NAME
 	PROD_REDIS_NAME="go_mtg_vk_prod_redis"
 	sudo docker run -d --net-alias redis --restart always --network $PROD_NETWORK_NAME --name $PROD_REDIS_NAME redis
+	sudo docker  rmi -f $PROD_IMAGE_NAME
 	sudo docker tag $TEST_IMAGE_NAME $PROD_IMAGE_NAME
 	sudo docker rmi $TEST_IMAGE_NAME
 	PROD_CONTAINER_NAME="go_mtg_vk_prod_container"
