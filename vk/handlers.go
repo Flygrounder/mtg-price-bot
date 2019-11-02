@@ -3,11 +3,12 @@ package vk
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strings"
+
 	"github.com/flygrounder/go-mtg-vk/caching"
 	"github.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strings"
 )
 
 const CARDSLIMIT = 8
@@ -41,7 +42,11 @@ func handleSearch(c *gin.Context, req *MessageRequest) {
 	} else if cardName == "" {
 		Message(req.Object.UserId, "Карта не найдена")
 	} else {
-		prices := GetPrices(cardName)
+		prices, err := GetPrices(cardName)
+		if err != nil {
+			Message(req.Object.UserId, "Цены временно недоступны, попробуйте позже")
+			return
+		}
 		elements := min(CARDSLIMIT, len(prices))
 		prices = prices[:elements]
 		priceInfo := cardsinfo.FormatCardPrices(cardName, prices)
@@ -49,18 +54,24 @@ func handleSearch(c *gin.Context, req *MessageRequest) {
 	}
 }
 
-func GetPrices(cardName string) []cardsinfo.CardPrice {
+func GetPrices(cardName string) ([]cardsinfo.CardPrice, error) {
 	client := caching.GetClient()
 	val, err := client.Get(cardName)
 	var prices []cardsinfo.CardPrice
 	if err != nil {
-		prices, _ = cardsinfo.GetSCGPrices(cardName)
-		serialized, _ := json.Marshal(prices)
+		prices, err = cardsinfo.GetSCGPrices(cardName)
+		if err != nil {
+			return nil, err
+		}
+		serialized, err := json.Marshal(prices)
+		if err != nil {
+			return nil, err
+		}
 		client.Set(cardName, string(serialized))
-		return prices
+		return prices, nil
 	}
 	json.Unmarshal([]byte(val), &prices)
-	return prices
+	return prices, nil
 }
 
 func getCardNameByCommand(command string) (string, error) {
