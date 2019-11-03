@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const CARDSLIMIT = 8
+const Cardslimit = 8
 
 func min(a, b int) int {
 	if a < b {
@@ -23,20 +23,20 @@ func min(a, b int) int {
 
 func HandleMessage(c *gin.Context) {
 	var req MessageRequest
-	c.BindJSON(&req)
-	if req.Secret != SECRET_KEY {
+	_ = c.BindJSON(&req)
+	if req.Secret != SecretKey {
 		return
 	}
 	switch req.Type {
 	case "confirmation":
 		handleConfirmation(c, &req)
 	case "message_new":
-		go handleSearch(c, &req)
+		go handleSearch(&req)
 		c.String(http.StatusOK, "ok")
 	}
 }
 
-func handleSearch(c *gin.Context, req *MessageRequest) {
+func handleSearch(req *MessageRequest) {
 	cardName, err := getCardNameByCommand(req.Object.Body)
 	if err != nil {
 		Message(req.Object.UserId, "Некорректная команда")
@@ -51,7 +51,7 @@ func handleSearch(c *gin.Context, req *MessageRequest) {
 			log.Printf("Could not find SCG prices\n error message: %s\n card name: %s", err.Error(), cardName)
 			return
 		}
-		elements := min(CARDSLIMIT, len(prices))
+		elements := min(Cardslimit, len(prices))
 		prices = prices[:elements]
 		priceInfo := cardsinfo.FormatCardPrices(cardName, prices)
 		Message(req.Object.UserId, priceInfo)
@@ -74,7 +74,7 @@ func GetPrices(cardName string) ([]cardsinfo.CardPrice, error) {
 		client.Set(cardName, string(serialized))
 		return prices, nil
 	}
-	json.Unmarshal([]byte(val), &prices)
+	_ = json.Unmarshal([]byte(val), &prices)
 	return prices, nil
 }
 
@@ -96,7 +96,7 @@ func getCardNameByCommand(command string) (string, error) {
 }
 
 func handleConfirmation(c *gin.Context, req *MessageRequest) {
-	if (req.Type == "confirmation") && (req.GroupId == GROUPID) {
-		c.String(http.StatusOK, CONFIRMATION_STRING)
+	if (req.Type == "confirmation") && (req.GroupId == GroupId) {
+		c.String(http.StatusOK, ConfirmationString)
 	}
 }

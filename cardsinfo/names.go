@@ -8,26 +8,26 @@ import (
 	"strings"
 )
 
-const SCRYFALL_URL = "https://api.scryfall.com"
+const ScryfallUrl = "https://api.scryfall.com"
 
 func GetNameByCardId(set string, number string) string {
 	/*
-	Note: number is string because some cards contain letters in their numbers.
+		Note: number is string because some cards contain letters in their numbers.
 	*/
-	path := SCRYFALL_URL + "/cards/" + strings.ToLower(set) + "/" + number
+	path := ScryfallUrl + "/cards/" + strings.ToLower(set) + "/" + number
 	return GetCardByUrl(path)
 }
 
 func GetOriginalName(name string) string {
-	path := SCRYFALL_URL + "/cards/named?fuzzy=" + ApplyFilters(name)
+	path := ScryfallUrl + "/cards/named?fuzzy=" + ApplyFilters(name)
 	return GetCardByUrl(path)
 }
 
 func ApplyFilters(name string) string {
 	/*
-	Despite of the rules of Russian language, letter ё is replaced with e on cards
-	Sometimes it leads to wrong search results
-	*/	
+		Despite of the rules of Russian language, letter ё is replaced with e on cards
+		Sometimes it leads to wrong search results
+	*/
 	name = strings.ReplaceAll(name, "ё", "е")
 	return url.QueryEscape(name)
 }
@@ -43,6 +43,9 @@ func GetCardByUrl(path string) string {
 		return ""
 	}
 	var v Card
-	json.Unmarshal(data, &v)
+	err = json.Unmarshal(data, &v)
+	if err != nil {
+		return ""
+	}
 	return v.getName()
 }

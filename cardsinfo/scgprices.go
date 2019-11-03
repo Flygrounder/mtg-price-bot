@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const SCGURL = "http://www.starcitygames.com/results?name="
+const Scgurl = "http://www.starcitygames.com/results?name="
 
 func GetSCGPrices(name string) ([]CardPrice, error) {
 	preprocessedName := preprocessNameForSearch(name)
@@ -69,7 +69,7 @@ func getPriceContainers(doc *html.Node) []*html.Node {
 func fetchPrice(price string) (float64, error) {
 	split := strings.Split(price, "$")
 	if len(split) < 2 {
-		return 0, errors.New("Not enough values")
+		return 0, errors.New("not enough values")
 	}
 	p := split[1]
 	v, err := strconv.ParseFloat(p, 64)
@@ -77,9 +77,9 @@ func fetchPrice(price string) (float64, error) {
 }
 
 func getSCGUrl(name string) string {
-	splitted := strings.Split(name, " ")
-	scgName := strings.Join(splitted, "+")
-	url := SCGURL + scgName
+	words := strings.Split(name, " ")
+	scgName := strings.Join(words, "+")
+	url := Scgurl + scgName
 	return url
 }
 

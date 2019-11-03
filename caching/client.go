@@ -23,11 +23,11 @@ func GetClient() *CacheClient {
 
 func (client *CacheClient) Init() {
 	client.storage = redis.NewClient(&redis.Options{
-		Addr:     HOST_NAME,
-		Password: PASSWORD,
+		Addr:     HostName,
+		Password: Password,
 		DB:       0,
 	})
-	client.Expiration = CACHE_EXPIRATION
+	client.Expiration = CacheExpiration
 }
 
 func (client *CacheClient) Set(key string, value string) {
