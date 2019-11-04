@@ -1,6 +1,7 @@
 package vk
 
 import (
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -26,8 +27,7 @@ func Message(userId int64, message string) {
 		log.Print("Could not send message\n user: %lld", userId)
 		return
 	}
-	var responseBytes []byte
-	_, _ = resp.Body.Read(responseBytes)
+	responseBytes, _ := ioutil.ReadAll(resp.Body)
 	log.Printf("Message sent\n user: %d\n message: %s\n server response: %s", userId, message,
 		string(responseBytes))
 }
