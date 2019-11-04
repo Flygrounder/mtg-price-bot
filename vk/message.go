@@ -1,6 +1,7 @@
 package vk
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -24,10 +25,13 @@ func Message(userId int64, message string) {
 	paramString := strings.Join(params, "&")
 	resp, err := http.Get(SendMessageUrl + "?" + paramString)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Print("Could not send message\n user: %lld", userId)
+		log.Printf("Could not send message\n user: %d", userId)
 		return
 	}
 	responseBytes, _ := ioutil.ReadAll(resp.Body)
-	log.Printf("Message sent\n user: %d\n message: %s\n server response: %s", userId, message,
-		string(responseBytes))
+	var response SendMessageResponse
+	_ = json.Unmarshal(responseBytes, &response)
+	if response.Error.ErrorCode != 0 {
+		log.Printf("Message was not sent message\n user: %d\n error message: %s", userId, response.Error.ErrorMsg)
+	}
 }
