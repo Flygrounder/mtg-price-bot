@@ -40,15 +40,15 @@ func handleSearch(req *MessageRequest) {
 	cardName, err := getCardNameByCommand(req.Object.Body)
 	if err != nil {
 		Message(req.Object.UserId, "Некорректная команда")
-		log.Printf("Not correct command\n error message: %s\n user input: %s", err.Error(), req.Object.Body)
+		log.Printf("Not correct command error message: %s user input: %s", err.Error(), req.Object.Body)
 	} else if cardName == "" {
 		Message(req.Object.UserId, "Карта не найдена")
-		log.Printf("Could not find card\n user input: %s", req.Object.Body)
+		log.Printf("Could not find card user input: %s", req.Object.Body)
 	} else {
 		prices, err := GetPrices(cardName)
 		if err != nil {
 			Message(req.Object.UserId, "Цены временно недоступны, попробуйте позже")
-			log.Printf("Could not find SCG prices\n error message: %s\n card name: %s", err.Error(), cardName)
+			log.Printf("Could not find SCG prices error message: %s card name: %s", err.Error(), cardName)
 			return
 		}
 		elements := min(Cardslimit, len(prices))

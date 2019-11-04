@@ -25,13 +25,13 @@ func Message(userId int64, message string) {
 	paramString := strings.Join(params, "&")
 	resp, err := http.Get(SendMessageUrl + "?" + paramString)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Printf("Could not send message\n user: %d", userId)
+		log.Printf("Could not send message user: %d", userId)
 		return
 	}
 	responseBytes, _ := ioutil.ReadAll(resp.Body)
 	var response SendMessageResponse
 	_ = json.Unmarshal(responseBytes, &response)
 	if response.Error.ErrorCode != 0 {
-		log.Printf("Message was not sent message\n user: %d\n error message: %s", userId, response.Error.ErrorMsg)
+		log.Printf("Message was not sent message user: %d error message: %s", userId, response.Error.ErrorMsg)
 	}
 }
