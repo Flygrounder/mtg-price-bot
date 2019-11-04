@@ -37,18 +37,24 @@ func HandleMessage(c *gin.Context) {
 }
 
 func handleSearch(req *MessageRequest) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("[error] Search panicked. Exception info: %s", r)
+		}
+	}()
+
 	cardName, err := getCardNameByCommand(req.Object.Body)
 	if err != nil {
 		Message(req.Object.UserId, "Некорректная команда")
-		log.Printf("Not correct command error message: %s user input: %s", err.Error(), req.Object.Body)
+		log.Printf("[info] Not correct command. Message: %s user input: %s", err.Error(), req.Object.Body)
 	} else if cardName == "" {
 		Message(req.Object.UserId, "Карта не найдена")
-		log.Printf("Could not find card user input: %s", req.Object.Body)
+		log.Printf("[info] Could not find card. User input: %s", req.Object.Body)
 	} else {
 		prices, err := GetPrices(cardName)
 		if err != nil {
 			Message(req.Object.UserId, "Цены временно недоступны, попробуйте позже")
-			log.Printf("Could not find SCG prices error message: %s card name: %s", err.Error(), cardName)
+			log.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
 		elements := min(Cardslimit, len(prices))
