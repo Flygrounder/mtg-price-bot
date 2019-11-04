@@ -24,5 +24,10 @@ func Message(userId int64, message string) {
 	resp, err := http.Get(SendMessageUrl + "?" + paramString)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		log.Print("Could not send message\n user: %lld", userId)
+		return
 	}
+	var responseBytes []byte
+	_, _ = resp.Body.Read(responseBytes)
+	log.Printf("Message sent\n user: %d\n message: %s\n server response: %s", userId, message,
+		string(responseBytes))
 }
