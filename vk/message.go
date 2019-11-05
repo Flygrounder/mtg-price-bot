@@ -14,7 +14,7 @@ import (
 const SendMessageUrl = "https://api.vk.com/method/messages.send"
 
 func Message(userId int64, message string) {
-	randomId := rand.Int31()
+	randomId := rand.Int63()
 	params := []string{
 		"access_token=" + Token,
 		"peer_id=" + strconv.FormatInt(userId, 10),
