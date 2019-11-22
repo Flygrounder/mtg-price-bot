@@ -28,18 +28,39 @@ func preprocessNameForSearch(name string) string {
 
 func fetchPrices(doc *html.Node) ([]CardPrice, error) {
 	priceContainers := getPriceContainers(doc)
-	prices := make([]CardPrice, 0)
+	length := len(priceContainers)
+	prices := make(chan CardPrice, length)
+	finished := make(chan bool, length)
+	cardPrices := make([]CardPrice, 0)
 	for _, container := range priceContainers {
-		name := parseName(container)
-		edition := parseEdition(container)
-		price := parsePrice(container)
-		link := parseLink(container)
-		cardPrice := buildCardPrice(name, edition, price, link)
-		if isValidPrice(&cardPrice) {
-			prices = append(prices, cardPrice)
+		go processCard(container, prices, finished)
+	}
+	processed := 0
+	for {
+		c := <-finished
+		processed++
+		if c {
+			cardPrices = append(cardPrices, <-prices)
+		}
+		if processed == length {
+			break
 		}
 	}
-	return prices, nil
+	return cardPrices, nil
+}
+
+func processCard(container *html.Node, prices chan CardPrice, finished chan bool) {
+	name := parseName(container)
+	edition := parseEdition(container)
+	price := parsePrice(container)
+	link := parseLink(container)
+	cardPrice := buildCardPrice(name, edition, price, link)
+	if isValidPrice(&cardPrice) {
+		prices <- cardPrice
+		finished <- true
+	} else {
+		finished <- false
+	}
 }
 
 func isValidPrice(price *CardPrice) bool {
