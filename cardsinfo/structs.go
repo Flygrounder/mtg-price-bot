@@ -22,3 +22,20 @@ func (c *Card) getName() string {
 	}
 	return c.Name
 }
+
+type ScgResponse struct {
+	Response ScgResponseContainer `json:"response"`
+}
+
+type ScgResponseContainer struct {
+	Data []ScgConditionContainer `json:"data"`
+}
+
+type ScgConditionContainer struct {
+	Price        float64        `json:"price"`
+	OptionValues []ScgCondition `json:"option_values"`
+}
+
+type ScgCondition struct {
+	Label string `json:"label"`
+}

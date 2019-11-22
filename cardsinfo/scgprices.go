@@ -1,14 +1,16 @@
 package cardsinfo
 
 import (
-	"errors"
+	"encoding/json"
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
-	"strconv"
+	"io/ioutil"
+	"net/http"
 	"strings"
 )
 
-const Scgurl = "http://www.starcitygames.com/results?name="
+const Scgurl = "https://www.starcitygames.com/search.php?search_query="
+const Scgapi = "https://newstarcityconnector.herokuapp.com/eyApi/products/"
 
 func GetSCGPrices(name string) ([]CardPrice, error) {
 	preprocessedName := preprocessNameForSearch(name)
@@ -60,20 +62,35 @@ func buildCardPrice(name, edition string, price float64, link string) CardPrice 
 }
 
 func getPriceContainers(doc *html.Node) []*html.Node {
-	nodesOdd := htmlquery.Find(doc, "//tr[contains(@class, 'deckdbbody_row')]")
-	nodesEven := htmlquery.Find(doc, "//tr[contains(@class, 'deckdbbody2_row')]")
-	nodes := append(nodesOdd, nodesEven...)
+	nodes := htmlquery.Find(doc, "//tr[@class='product']")
 	return nodes
 }
 
-func fetchPrice(price string) (float64, error) {
-	split := strings.Split(price, "$")
-	if len(split) < 2 {
-		return 0, errors.New("not enough values")
+func getItemId(item *html.Node) string {
+	return htmlquery.SelectAttr(item, "data-id")
+}
+
+func getPriceById(id string) float64 {
+	path := Scgapi + id + "/variants"
+	resp, err := http.Get(path)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return 0.0
 	}
-	p := split[1]
-	v, err := strconv.ParseFloat(p, 64)
-	return v, err
+	respString, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0.0
+	}
+	var scgResponse ScgResponse
+	err = json.Unmarshal(respString, &scgResponse)
+	if err != nil {
+		return 0.0
+	}
+	for _, v := range scgResponse.Response.Data {
+		if len(v.OptionValues) > 0 && v.OptionValues[0].Label == "Near Mint" {
+			return v.Price
+		}
+	}
+	return 0.0
 }
 
 func getSCGUrl(name string) string {
@@ -84,38 +101,37 @@ func getSCGUrl(name string) string {
 }
 
 func parseName(container *html.Node) string {
-	nameNode := htmlquery.FindOne(container, "//td[contains(@class, 'search_results_1')]")
+	nameNode := htmlquery.FindOne(container, "//h4[@class='listItem-title']")
 	if nameNode == nil {
 		return ""
 	}
 	name := htmlquery.InnerText(nameNode)
+	name = strings.Trim(name, "\n ")
 	return name
 }
 
 func parseEdition(container *html.Node) string {
-	editionNode := htmlquery.FindOne(container, "//td[contains(@class, 'search_results_2')]")
+	editionNode := htmlquery.FindOne(container, "//span[@class='category-row-name-search']")
 	if editionNode == nil {
 		return ""
 	}
 	edition := strings.Trim(htmlquery.InnerText(editionNode), "\n ")
-	return edition
+	parts := strings.Split(edition, "/")
+	if len(parts) == 0 {
+		return ""
+	}
+	last := len(parts) - 1
+	return parts[last]
 }
 
 func parsePrice(container *html.Node) float64 {
-	priceNode := htmlquery.FindOne(container, "//td[contains(@class, 'search_results_9')]")
-	if priceNode == nil {
-		return 0.0
-	}
-	priceString := htmlquery.InnerText(priceNode)
-	price, err := fetchPrice(priceString)
-	if err != nil {
-		return 0.0
-	}
+	id := getItemId(container)
+	price := getPriceById(id)
 	return price
 }
 
 func parseLink(container *html.Node) string {
-	linkNodes := htmlquery.Find(container, "//td[contains(@class, 'search_results_1')]/b/a")
+	linkNodes := htmlquery.Find(container, "//h4[@class='listItem-title']/a")
 	if len(linkNodes) == 0 {
 		return ""
 	}
