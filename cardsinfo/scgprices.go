@@ -11,6 +11,7 @@ import (
 
 const Scgurl = "https://www.starcitygames.com/search.php?search_query="
 const Scgapi = "https://newstarcityconnector.herokuapp.com/eyApi/products/"
+const MaxCards = 4
 
 func GetSCGPrices(name string) ([]CardPrice, error) {
 	preprocessedName := preprocessNameForSearch(name)
@@ -27,7 +28,7 @@ func preprocessNameForSearch(name string) string {
 }
 
 func fetchPrices(doc *html.Node) ([]CardPrice, error) {
-	priceContainers := getPriceContainers(doc)
+	priceContainers := getPriceContainers(doc)[:MaxCards]
 	length := len(priceContainers)
 	prices := make(chan CardPrice, length)
 	finished := make(chan bool, length)

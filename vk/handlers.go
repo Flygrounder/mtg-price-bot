@@ -12,15 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const Cardslimit = 8
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 func HandleMessage(c *gin.Context) {
 	var req MessageRequest
 	_ = c.BindJSON(&req)
@@ -57,8 +48,6 @@ func handleSearch(req *MessageRequest) {
 			log.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
-		elements := min(Cardslimit, len(prices))
-		prices = prices[:elements]
 		priceInfo := cardsinfo.FormatCardPrices(cardName, prices)
 		Message(req.Object.UserId, priceInfo)
 	}
