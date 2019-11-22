@@ -28,7 +28,10 @@ func preprocessNameForSearch(name string) string {
 }
 
 func fetchPrices(doc *html.Node) ([]CardPrice, error) {
-	priceContainers := getPriceContainers(doc)[:MaxCards]
+	priceContainers := getPriceContainers(doc)
+	if MaxCards < len(priceContainers) {
+		priceContainers = priceContainers[:MaxCards]
+	}
 	length := len(priceContainers)
 	prices := make(chan CardPrice, length)
 	finished := make(chan bool, length)
