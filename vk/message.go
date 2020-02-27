@@ -20,7 +20,7 @@ func Message(userId int64, message string) {
 		"peer_id=" + strconv.FormatInt(userId, 10),
 		"message=" + url.QueryEscape(message),
 		"v=5.95",
-		"random_id=" + strconv.FormatInt(int64(randomId), 10),
+		"random_id=" + strconv.FormatInt(randomId, 10),
 	}
 	paramString := strings.Join(params, "&")
 	resp, err := http.Get(SendMessageUrl + "?" + paramString)

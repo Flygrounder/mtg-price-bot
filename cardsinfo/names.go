@@ -37,7 +37,9 @@ func GetCardByUrl(path string) string {
 	if err != nil {
 		return ""
 	}
-	defer response.Body.Close()
+	defer func() {
+		_ = response.Body.Close()
+	}()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return ""

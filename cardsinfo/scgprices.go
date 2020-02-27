@@ -2,8 +2,10 @@ package cardsinfo
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/charset"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -16,11 +18,29 @@ const MaxCards = 4
 func GetSCGPrices(name string) ([]CardPrice, error) {
 	preprocessedName := preprocessNameForSearch(name)
 	url := getSCGUrl(preprocessedName)
-	doc, err := htmlquery.LoadURL(url)
+	doc, err := getScgHTML(url)
 	if err != nil {
 		return nil, err
 	}
 	return fetchPrices(doc)
+}
+
+func getScgHTML(url string) (*html.Node, error) {
+	response, err := http.Get(url)
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, errors.New("not ok status")
+	}
+
+	r, err := charset.NewReader(response.Body, response.Header.Get("Content-Type"))
+	if err != nil {
+		return nil, err
+	}
+
+	return html.Parse(r)
 }
 
 func preprocessNameForSearch(name string) string {
@@ -119,8 +139,7 @@ func getPriceById(id string) float64 {
 }
 
 func getSCGUrl(name string) string {
-	words := strings.Split(name, " ")
-	scgName := strings.Join(words, "+")
+	scgName := strings.Replace(name, " ", "+", -1)
 	url := Scgurl + scgName
 	return url
 }
