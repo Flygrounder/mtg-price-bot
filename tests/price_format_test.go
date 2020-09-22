@@ -10,7 +10,7 @@ func TestFormat(t *testing.T) {
 	data := []cardsinfo.CardPrice{
 		{
 			Name:    "Green lotus",
-			Price:   "22.8",
+			PriceFoil:   "22.8",
 			Link:    "scg.com/1",
 			Edition: "alpha",
 		},
@@ -22,6 +22,6 @@ func TestFormat(t *testing.T) {
 		},
 	}
 	res := cardsinfo.FormatCardPrices("Black Lotus", data)
-	ans := "Оригинальное название: Black Lotus\nРезультатов: 2\n1. alpha: $22.8\nscg.com/1\n2. gamma: $3.22\nscg.com/2\n"
+	ans := "Оригинальное название: Black Lotus\nРезультатов: 2\n1. alpha\nRegular: -\nFoil: $22.8\nscg.com/1\n2. gamma\nRegular: $3.22\nFoil: -\nscg.com/2\n"
 	assert.Equal(t, res, ans)
 }

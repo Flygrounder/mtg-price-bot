@@ -7,6 +7,7 @@ import (
 type CardPrice struct {
 	Name    string
 	Price   string
+	PriceFoil string
 	Link    string
 	Edition string
 }

@@ -20,15 +20,14 @@ func GetPrices(name string) ([]CardPrice, error) {
 	var prices []CardPrice
 	for _, card := range resp.Cards {
 		foilString := ""
-		price := card.Prices.USD
-		if card.Foil {
-			foilString = "(Foil)"
-			price = card.Prices.USDFoil
-		}
 		edition := card.SetName + foilString
+		if card.Prices.USD == "" && card.Prices.USDFoil == "" {
+			continue
+		}
 		cardPrice := CardPrice {
 			Edition: edition,
-			Price: price,
+			Price: card.Prices.USD,
+			PriceFoil: card.Prices.USDFoil,
 			Name: card.Name,
 			Link: card.PurchaseURIs.TCGPlayer,
 		}
