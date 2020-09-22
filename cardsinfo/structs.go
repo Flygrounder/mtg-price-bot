@@ -5,6 +5,7 @@ import (
 )
 
 type CardPrice struct {
+	FullArt bool
 	Name    string
 	Price   string
 	PriceFoil string

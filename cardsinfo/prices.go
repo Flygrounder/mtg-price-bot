@@ -19,8 +19,11 @@ func GetPrices(name string) ([]CardPrice, error) {
 	resp, err := client.SearchCards(ctx, name, opts)
 	var prices []CardPrice
 	for _, card := range resp.Cards {
-		foilString := ""
-		edition := card.SetName + foilString
+		fullArtString := ""
+		if card.FullArt {
+			fullArtString = " (Fullart)"
+		}
+		edition := card.SetName + fullArtString
 		if card.Prices.USD == "" && card.Prices.USDFoil == "" {
 			continue
 		}
