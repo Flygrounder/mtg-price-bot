@@ -33,5 +33,8 @@ func GetPrices(name string) ([]CardPrice, error) {
 		}
 		prices = append(prices, cardPrice)
 	}
-	return prices[:5], nil
+	if len(prices) > 5 {
+		return prices[:5], nil
+	}
+	return prices, nil
 }
