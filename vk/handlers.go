@@ -58,7 +58,7 @@ func GetPrices(cardName string) ([]cardsinfo.CardPrice, error) {
 	val, err := client.Get(cardName)
 	var prices []cardsinfo.CardPrice
 	if err != nil {
-		prices, err = cardsinfo.GetSCGPrices(cardName)
+		prices, err = cardsinfo.GetPrices(cardName)
 		if err != nil {
 			return nil, err
 		}

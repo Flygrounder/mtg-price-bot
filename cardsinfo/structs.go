@@ -6,7 +6,7 @@ import (
 
 type CardPrice struct {
 	Name    string
-	Price   float64
+	Price   string
 	Link    string
 	Edition string
 }

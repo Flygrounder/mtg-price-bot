@@ -10,13 +10,13 @@ func TestFormat(t *testing.T) {
 	data := []cardsinfo.CardPrice{
 		{
 			Name:    "Green lotus",
-			Price:   22.8,
+			Price:   "22.8",
 			Link:    "scg.com/1",
 			Edition: "alpha",
 		},
 		{
 			Name:    "White lotus",
-			Price:   3.22,
+			Price:   "3.22",
 			Link:    "scg.com/2",
 			Edition: "gamma",
 		},
