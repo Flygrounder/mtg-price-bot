@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"fmt"
 	"github.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/stretchr/testify/assert"
 	"testing"
