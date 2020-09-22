@@ -8,8 +8,7 @@ import (
 )
 
 func TestParser(t *testing.T) {
-	prices, err := cardsinfo.GetPrices("shock")
+	prices, err := cardsinfo.GetPrices("Scavenging Ooze")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, prices)
-	fmt.Println(prices)
 }

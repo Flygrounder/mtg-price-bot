@@ -1,6 +1,7 @@
 package cardsinfo
 
 import (
+	"fmt"
 	"context"
 
 	scryfall "github.com/BlueMonday/go-scryfall"
@@ -14,7 +15,7 @@ func GetPrices(name string) ([]CardPrice, error) {
 	}
 	ctx := context.Background()
 	opts := scryfall.SearchCardsOptions{
-
+		Unique: scryfall.UniqueModePrints,
 	}
 	resp, err := client.SearchCards(ctx, name, opts)
 	var prices []CardPrice
