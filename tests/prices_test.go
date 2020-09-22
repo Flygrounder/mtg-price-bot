@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -8,6 +9,7 @@ import (
 
 func TestParser(t *testing.T) {
 	prices, err := cardsinfo.GetPrices("Scavenging Ooze")
+	fmt.Println(prices)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, prices)
 }
