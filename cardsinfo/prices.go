@@ -1,7 +1,6 @@
 package cardsinfo
 
 import (
-	"fmt"
 	"context"
 
 	scryfall "github.com/BlueMonday/go-scryfall"
