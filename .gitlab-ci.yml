@@ -11,8 +11,9 @@ deploy:
   services:
     - docker:19.03.12-dind
   script:
-    - docker build . -t $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+    - docker build . -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
     - docker login $REGISTRY_NAME -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+    - docker push $DOCKER_IMAGE_TAG
   only:
     - master

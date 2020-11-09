@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  web:
+    image: flygrounder/go-mtg-vk:latest
+    environment:
+      - VK_TOKEN
+      - VK_SECRET_KEY
+      - VK_GROUP_ID
+      - VK_CONFIRMATION_STRING
+
+    ports:
+      - "8888:80"
+  redis:
+    image: "redis:6.0.9"

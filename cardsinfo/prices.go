@@ -14,7 +14,14 @@ const scgDomain = "https://starcitygames.com"
 const scgSearchUrlTemplate = "https://starcitygames.hawksearch.com/sites/starcitygames/?search_query=%v"
 
 func GetPrices(name string) ([]CardPrice, error) {
-	return GetPricesScg(name)
+	prices, err := GetPricesScg(name)
+	if err != nil {
+		return nil, err
+	}
+	if len(prices) > 5 {
+		return prices[:5], nil
+	}
+	return prices, nil
 }
 
 func GetPricesScg(name string) ([]CardPrice, error) {
@@ -68,9 +75,6 @@ func GetPricesTcg(name string) ([]CardPrice, error) {
 			Link: card.PurchaseURIs.TCGPlayer,
 		}
 		prices = append(prices, cardPrice)
-	}
-	if len(prices) > 5 {
-		return prices[:5], nil
 	}
 	return prices, nil
 }
