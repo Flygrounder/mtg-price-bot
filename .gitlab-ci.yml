@@ -1,10 +1,10 @@
-image: "golang:1.15.4-buster"
-
 test:
+  image: "golang:1.15.4-buster"
   stage: test
   script:
     - go test ./...
 deploy:
+  image: "docker:19.03"
   stage: deploy
   script:
     - docker build . -t $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
