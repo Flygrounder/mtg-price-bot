@@ -6,7 +6,7 @@ import (
 )
 
 type CacheClient struct {
-	storage    *redis.Client
+	Storage    *redis.Client
 	Expiration time.Duration
 }
 
@@ -22,7 +22,7 @@ func GetClient() *CacheClient {
 }
 
 func (client *CacheClient) Init() {
-	client.storage = redis.NewClient(&redis.Options{
+	client.Storage = redis.NewClient(&redis.Options{
 		Addr:     HostName,
 		Password: Password,
 		DB:       0,
@@ -31,9 +31,9 @@ func (client *CacheClient) Init() {
 }
 
 func (client *CacheClient) Set(key string, value string) {
-	client.storage.Set(key, value, client.Expiration)
+	client.Storage.Set(key, value, client.Expiration)
 }
 
 func (client *CacheClient) Get(key string) (string, error) {
-	return client.storage.Get(key).Result()
+	return client.Storage.Get(key).Result()
 }

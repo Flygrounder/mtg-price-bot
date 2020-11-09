@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/flygrounder/go-mtg-vk/vk"
+	"gitlab.com/flygrounder/go-mtg-vk/vk"
 	"github.com/gin-gonic/gin"
 )
 

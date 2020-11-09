@@ -1,16 +1,42 @@
 package cardsinfo
 
 import (
+	"fmt"
 	"strings"
 )
 
-type CardPrice struct {
+type CardPrice interface {
+	Format() string
+}
+
+type TcgCardPrice struct {
 	FullArt bool
 	Name    string
 	Price   string
 	PriceFoil string
 	Link    string
 	Edition string
+}
+
+func (t *TcgCardPrice) Format() string {
+	return fmt.Sprintf("%v\nRegular: %v\nFoil: %v\n%v\n", t.Edition, formatTcgPrice(t.Price), formatTcgPrice(t.PriceFoil), t.Link)
+}
+
+func formatTcgPrice(price string) string {
+	if price == "" {
+		return "-"
+	}
+	return fmt.Sprintf("$%v", price)
+}
+
+type ScgCardPrice struct {
+	Price string
+	Edition string
+	Link string
+}
+
+func (s *ScgCardPrice) Format() string {
+	return fmt.Sprintf("%v: %v\n%v\n", s.Edition, s.Price, s.Link)
 }
 
 type Card struct {
@@ -23,21 +49,4 @@ func (c *Card) getName() string {
 		return strings.Replace(c.Name, "//", "|", 1)
 	}
 	return c.Name
-}
-
-type ScgResponse struct {
-	Response ScgResponseContainer `json:"response"`
-}
-
-type ScgResponseContainer struct {
-	Data []ScgConditionContainer `json:"data"`
-}
-
-type ScgConditionContainer struct {
-	Price        float64        `json:"price"`
-	OptionValues []ScgCondition `json:"option_values"`
-}
-
-type ScgCondition struct {
-	Label string `json:"label"`
 }

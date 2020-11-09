@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/flygrounder/go-mtg-vk/caching"
-	"github.com/flygrounder/go-mtg-vk/cardsinfo"
+	"gitlab.com/flygrounder/go-mtg-vk/caching"
+	"gitlab.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/gin-gonic/gin"
 )
 
