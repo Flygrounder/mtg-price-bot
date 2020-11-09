@@ -1,0 +1,14 @@
+image: "golang:1.15.4-alpine3.12"
+
+test:
+  stage: test
+  script:
+    - go test ./...
+deploy:
+  stage: deploy
+  script:
+    - docker build . -t $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+    - docker login $REGISTRY_NAME -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - docker push $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+  only:
+    - master
