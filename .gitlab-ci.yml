@@ -16,6 +16,6 @@ deploy:
     - docker login $REGISTRY_NAME -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
     - docker push $DOCKER_IMAGE_TAG
-    - curl -X POST -H "Authorization: Bearer $GOCD_ACCESS_TOKEN" -d '{"repository_url": "https://gitlab.com/flygrounder/go-mtg-vk.git"}' http://165.22.85.27:8153/go/admin/materials/git/notify
+    - "curl -X POST -H \"Authorization: Bearer $GOCD_ACCESS_TOKEN\" -d '{\"repository_url\": \"https://gitlab.com/flygrounder/go-mtg-vk.git\"}' http://165.22.85.27:8153/go/admin/materials/git/notify"
   only:
     - master
