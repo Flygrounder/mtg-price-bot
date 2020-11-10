@@ -43,9 +43,13 @@ func GetPricesScg(name string) ([]CardPrice, error) {
 			}
 		}
 		editionNode := htmlquery.FindOne(block, "//p[@class=\"hawk-results-item__category\"]/a")
-		price.Edition = editionNode.FirstChild.Data
+		if editionNode.FirstChild != nil {
+			price.Edition = editionNode.FirstChild.Data
+		}
 		priceNode := htmlquery.FindOne(block, "//div[contains(concat(' ',normalize-space(@class),' '),' hawk-results-item__options-table-cell--price ')]")
-		price.Price = priceNode.FirstChild.Data
+		if priceNode.FirstChild != nil {
+			price.Price = priceNode.FirstChild.Data
+		}
 		results = append(results, price)
 	}
 	return results, nil
