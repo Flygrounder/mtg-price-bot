@@ -8,12 +8,13 @@ deploy:
   image: "docker:19.03.12"
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
+    IMAGE_NAME: "$DOCKER_IMAGE_TAG:$CI_JOB_ID_$CI_COMMIT_SHORT_SHA"
   services:
     - docker:19.03.12-dind
   script:
-    - docker build . -t $DOCKER_IMAGE_TAG -t $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+    - docker build . -t $DOCKER_IMAGE_TAG -t $IMAGE_NAME
     - docker login $REGISTRY_NAME -u $DOCKER_USER -p $DOCKER_PASSWORD
-    - docker push $DOCKER_IMAGE_TAG:$CI_JOB_ID$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE_NAME
     - docker push $DOCKER_IMAGE_TAG
   only:
     - master
