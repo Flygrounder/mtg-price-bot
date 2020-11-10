@@ -8,7 +8,7 @@ deploy:
   image: "docker:19.03.12"
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    IMAGE_NAME: "$DOCKER_IMAGE_TAG:$CI_JOB_ID_$CI_COMMIT_SHORT_SHA"
+    IMAGE_NAME: "$DOCKER_IMAGE_TAG:$CI_JOB_ID.$CI_COMMIT_SHORT_SHA"
   services:
     - docker:19.03.12-dind
   script:
