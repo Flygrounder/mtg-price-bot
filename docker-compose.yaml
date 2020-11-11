@@ -9,7 +9,7 @@ services:
       - VK_CONFIRMATION_STRING
 
     ports:
-      - "8888:80"
+      - "127.0.0.1:8888:80"
     restart: "always"
   redis:
     image: "redis:6.0.9"
