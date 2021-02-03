@@ -1,11 +1,9 @@
 package cardsinfo
 
 import (
-	"context"
 	"fmt"
 	"net/url"
 
-	scryfall "github.com/BlueMonday/go-scryfall"
 	"github.com/antchfx/htmlquery"
 	"github.com/pkg/errors"
 )
@@ -46,39 +44,11 @@ func GetPricesScg(name string) ([]CardPrice, error) {
 		if editionNode.FirstChild != nil {
 			price.Edition = editionNode.FirstChild.Data
 		}
-		priceNode := htmlquery.FindOne(block, "//div[contains(concat(' ',normalize-space(@class),' '),' hawk-results-item__options-table-cell--price ')]")
+		priceNode := htmlquery.FindOne(block, "//span[@class='hawk-old-price']|//div[contains(concat(' ',normalize-space(@class),' '),' hawk-results-item__options-table-cell--price ')]")
 		if priceNode.FirstChild != nil {
 			price.Price = priceNode.FirstChild.Data
 		}
 		results = append(results, price)
 	}
 	return results, nil
-}
-
-func GetPricesTcg(name string) ([]CardPrice, error) {
-	client, err := scryfall.NewClient()
-	if err != nil {
-		return nil, errors.Wrap(err, "Cannot fetch prices")
-	}
-	ctx := context.Background()
-	opts := scryfall.SearchCardsOptions{
-		Unique: scryfall.UniqueModePrints,
-	}
-	resp, err := client.SearchCards(ctx, fmt.Sprintf("!\"%v\"", name), opts)
-	var prices []CardPrice
-	for _, card := range resp.Cards {
-		edition := card.SetName + " #" + card.CollectorNumber
-		if card.Prices.USD == "" && card.Prices.USDFoil == "" {
-			continue
-		}
-		cardPrice := &TcgCardPrice{
-			Edition:   edition,
-			Price:     card.Prices.USD,
-			PriceFoil: card.Prices.USDFoil,
-			Name:      card.Name,
-			Link:      card.PurchaseURIs.TCGPlayer,
-		}
-		prices = append(prices, cardPrice)
-	}
-	return prices, nil
 }
