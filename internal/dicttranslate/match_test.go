@@ -40,6 +40,13 @@ func TestMatch(t *testing.T) {
 			opts:       []string{"option", "opt1on"},
 			shouldFind: false,
 		},
+		{
+			name:       "Match case insensitive",
+			query:      "option",
+			opts:       []string{"OPTION", "opt1on"},
+			shouldFind: true,
+			match:      "OPTION",
+		},
 	}
 
 	for _, test := range tests {
