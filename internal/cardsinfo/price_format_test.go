@@ -8,10 +8,10 @@ import (
 func TestFormat(t *testing.T) {
 	data := []CardPrice{
 		&TcgCardPrice{
-			Name:    "Green lotus",
-			PriceFoil:   "22.8",
-			Link:    "scg.com/1",
-			Edition: "alpha",
+			Name:      "Green lotus",
+			PriceFoil: "22.8",
+			Link:      "scg.com/1",
+			Edition:   "alpha",
 		},
 		&TcgCardPrice{
 			Name:    "White lotus",

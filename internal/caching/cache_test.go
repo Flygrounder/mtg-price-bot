@@ -43,7 +43,7 @@ func getTestClient() (*CacheClient, *miniredis.Miniredis) {
 		Addr: s.Addr(),
 	})
 	return &CacheClient{
-		Storage: c,
+		Storage:    c,
 		Expiration: 0,
 	}, s
 }

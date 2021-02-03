@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   web:
-    image: flygrounder/go-mtg-vk:latest
+    build: .
     environment:
       - VK_TOKEN
       - VK_SECRET_KEY

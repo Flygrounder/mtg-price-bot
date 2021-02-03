@@ -71,12 +71,12 @@ func GetPricesTcg(name string) ([]CardPrice, error) {
 		if card.Prices.USD == "" && card.Prices.USDFoil == "" {
 			continue
 		}
-		cardPrice := &TcgCardPrice {
-			Edition: edition,
-			Price: card.Prices.USD,
+		cardPrice := &TcgCardPrice{
+			Edition:   edition,
+			Price:     card.Prices.USD,
 			PriceFoil: card.Prices.USDFoil,
-			Name: card.Name,
-			Link: card.PurchaseURIs.TCGPlayer,
+			Name:      card.Name,
+			Link:      card.PurchaseURIs.TCGPlayer,
 		}
 		prices = append(prices, cardPrice)
 	}

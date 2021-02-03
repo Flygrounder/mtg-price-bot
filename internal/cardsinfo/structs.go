@@ -10,12 +10,12 @@ type CardPrice interface {
 }
 
 type TcgCardPrice struct {
-	FullArt bool
-	Name    string
-	Price   string
+	FullArt   bool
+	Name      string
+	Price     string
 	PriceFoil string
-	Link    string
-	Edition string
+	Link      string
+	Edition   string
 }
 
 func (t *TcgCardPrice) Format() string {
@@ -30,9 +30,9 @@ func formatTcgPrice(price string) string {
 }
 
 type ScgCardPrice struct {
-	Price string
+	Price   string
 	Edition string
-	Link string
+	Link    string
 }
 
 func (s *ScgCardPrice) Format() string {

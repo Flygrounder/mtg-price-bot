@@ -4,12 +4,15 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
-	"gitlab.com/flygrounder/go-mtg-vk/caching"
-	"gitlab.com/flygrounder/go-mtg-vk/cardsinfo"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/caching"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
+
+var dictPath = "./assets/additional_cards.json"
 
 func HandleMessage(c *gin.Context) {
 	var req MessageRequest
@@ -78,7 +81,8 @@ func getCardNameByCommand(command string) (string, error) {
 		number := split[2]
 		name = cardsinfo.GetNameByCardId(set, number)
 	default:
-		name = cardsinfo.GetOriginalName(command)
+		dict, _ := os.Open(dictPath)
+		name = cardsinfo.GetOriginalName(command, dict)
 	}
 	return name, nil
 }

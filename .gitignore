@@ -1,5 +1,5 @@
 vendor
-go-mtg-vk
 *.swp
 hosts
 .idea
+.venv

@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"gitlab.com/flygrounder/go-mtg-vk/vk"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/vk"
 )
 
 func main() {
@@ -17,5 +17,5 @@ func main() {
 	log.SetOutput(logFile)
 	r := gin.Default()
 	r.POST("callback/message", vk.HandleMessage)
-	_ = r.Run(":80")
+	_ = r.Run(":8000")
 }

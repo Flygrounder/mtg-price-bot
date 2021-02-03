@@ -2,6 +2,8 @@ package cardsinfo
 
 import (
 	"encoding/json"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/dicttranslate"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -18,9 +20,13 @@ func GetNameByCardId(set string, number string) string {
 	return GetCardByUrl(path)
 }
 
-func GetOriginalName(name string) string {
+func GetOriginalName(name string, dict io.Reader) string {
 	path := ScryfallUrl + "/cards/named?fuzzy=" + ApplyFilters(name)
-	return GetCardByUrl(path)
+	result := GetCardByUrl(path)
+	if result == "" && dict != nil {
+		result, _ = dicttranslate.FindFromReader(name, dict, 5)
+	}
+	return result
 }
 
 func ApplyFilters(name string) string {
