@@ -12,6 +12,17 @@ import (
 	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
+type Handler struct {
+	Sender             Sender
+	Logger             *log.Logger
+	SecretKey          string
+	GroupId            int64
+	ConfirmationString string
+	DictPath           string
+	Cache              CardCache
+	InfoFetcher        CardInfoFetcher
+}
+
 type CardInfoFetcher interface {
 	GetPrices(name string) ([]cardsinfo.CardPrice, error)
 	FormatCardPrices(name string, prices []cardsinfo.CardPrice) string
@@ -22,17 +33,6 @@ type CardInfoFetcher interface {
 type CardCache interface {
 	Get(cardName string) (string, error)
 	Set(cardName string, message string)
-}
-
-type Handler struct {
-	Sender             Sender
-	Logger             *log.Logger
-	SecretKey          string
-	GroupId            int64
-	ConfirmationString string
-	DictPath           string
-	Cache              CardCache
-	InfoFetcher        CardInfoFetcher
 }
 
 type messageRequest struct {
