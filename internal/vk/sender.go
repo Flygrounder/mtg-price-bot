@@ -18,7 +18,8 @@ type Sender interface {
 }
 
 type ApiSender struct {
-	Token string
+	Token  string
+	Logger *log.Logger
 }
 
 type sendMessageResponse struct {
@@ -43,13 +44,13 @@ func (s *ApiSender) Send(userId int64, message string) {
 	reqUrl := SendMessageUrl + "?" + joined
 	resp, err := http.Get(reqUrl)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Printf("[error] Could not Send message. User: %d", userId)
+		s.Logger.Printf("[error] Could not Send message. User: %d", userId)
 		return
 	}
 	respContent, _ := ioutil.ReadAll(resp.Body)
 	var unmarshalled sendMessageResponse
 	_ = json.Unmarshal(respContent, &unmarshalled)
 	if unmarshalled.Error.ErrorCode != 0 {
-		log.Printf("[error] Message was not sent. User: %d error message: %s", userId, unmarshalled.Error.ErrorMsg)
+		s.Logger.Printf("[error] Message was not sent. User: %d error message: %s", userId, unmarshalled.Error.ErrorMsg)
 	}
 }

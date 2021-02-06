@@ -14,4 +14,5 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/texttheater/golang-levenshtein/levenshtein v0.0.0-20200805054039-cae8b0eaed6c
 	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da // indirect
+	gopkg.in/h2non/gock.v1 v1.0.16
 )
