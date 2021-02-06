@@ -3,3 +3,4 @@ vendor
 hosts
 .idea
 .venv
+coverage.out

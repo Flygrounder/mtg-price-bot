@@ -9,26 +9,6 @@ type CardPrice interface {
 	Format() string
 }
 
-type TcgCardPrice struct {
-	FullArt   bool
-	Name      string
-	Price     string
-	PriceFoil string
-	Link      string
-	Edition   string
-}
-
-func (t *TcgCardPrice) Format() string {
-	return fmt.Sprintf("%v\nRegular: %v\nFoil: %v\n%v\n", t.Edition, formatTcgPrice(t.Price), formatTcgPrice(t.PriceFoil), t.Link)
-}
-
-func formatTcgPrice(price string) string {
-	if price == "" {
-		return "-"
-	}
-	return fmt.Sprintf("$%v", price)
-}
-
 type ScgCardPrice struct {
 	Price   string
 	Edition string

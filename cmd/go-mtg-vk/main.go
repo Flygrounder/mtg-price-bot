@@ -20,14 +20,14 @@ func main() {
 	groupId, _ := strconv.ParseInt(os.Getenv("VK_GROUP_ID"), 10, 64)
 	handler := vk.Handler{
 		Sender: &vk.ApiSender{
-			Token:              os.Getenv("VK_TOKEN"),
+			Token: os.Getenv("VK_TOKEN"),
 		},
-		Logger: log.New(os.Stdout, "", 0),
+		Logger:             log.New(os.Stdout, "", 0),
 		SecretKey:          os.Getenv("VK_SECRET_KEY"),
 		GroupId:            groupId,
 		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
-		DictPath: "./assets/additional_cards.json",
-		CachingClient: caching.GetClient(),
+		DictPath:           "./assets/additional_cards.json",
+		Cache:              caching.GetClient(),
 	}
 
 	r.POST("callback/message", handler.HandleMessage)

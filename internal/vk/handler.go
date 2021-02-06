@@ -2,15 +2,27 @@ package vk
 
 import (
 	"errors"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/flygrounder/go-mtg-vk/internal/caching"
 	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
+
+type CardInfoFetcher interface {
+	GetPrices(name string) ([]cardsinfo.CardPrice, error)
+	FormatCardPrices(name string, prices []cardsinfo.CardPrice) string
+	GetNameByCardId(set string, number string) string
+	GetOriginalName(name string, dict io.Reader) string
+}
+
+type CardCache interface {
+	Get(cardName string) (string, error)
+	Set(cardName string, message string)
+}
 
 type Handler struct {
 	Sender             Sender
@@ -19,7 +31,8 @@ type Handler struct {
 	GroupId            int64
 	ConfirmationString string
 	DictPath           string
-	CachingClient      *caching.CacheClient
+	Cache              CardCache
+	InfoFetcher        CardInfoFetcher
 }
 
 type messageRequest struct {
@@ -33,6 +46,12 @@ type userMessage struct {
 	Body   string `json:"text"`
 	UserId int64  `json:"peer_id"`
 }
+
+const (
+	incorrectMessage         = "Некорректная команда"
+	cardNotFoundMessage      = "Карта не найдена"
+	pricesUnavailableMessage = "Цены временно недоступны, попробуйте позже"
+)
 
 func (h *Handler) HandleMessage(c *gin.Context) {
 	var req messageRequest
@@ -50,23 +69,17 @@ func (h *Handler) HandleMessage(c *gin.Context) {
 }
 
 func (h *Handler) handleSearch(req *messageRequest) {
-	defer func() {
-		if r := recover(); r != nil {
-			h.Logger.Printf("[error] Search panicked. Exception info: %s", r)
-		}
-	}()
-
 	cardName, err := h.getCardNameByCommand(req.Object.Body)
 	if err != nil {
-		h.Sender.Send(req.Object.UserId, "Некорректная команда")
+		h.Sender.Send(req.Object.UserId, incorrectMessage)
 		h.Logger.Printf("[info] Not correct command. Message: %s user input: %s", err.Error(), req.Object.Body)
 	} else if cardName == "" {
-		h.Sender.Send(req.Object.UserId, "Карта не найдена")
+		h.Sender.Send(req.Object.UserId, cardNotFoundMessage)
 		h.Logger.Printf("[info] Could not find card. User input: %s", req.Object.Body)
 	} else {
 		message, err := h.getMessage(cardName)
 		if err != nil {
-			h.Sender.Send(req.Object.UserId, "Цены временно недоступны, попробуйте позже")
+			h.Sender.Send(req.Object.UserId, pricesUnavailableMessage)
 			h.Logger.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
@@ -81,14 +94,14 @@ func (h *Handler) handleConfirmation(c *gin.Context, req *messageRequest) {
 }
 
 func (h *Handler) getMessage(cardName string) (string, error) {
-	val, err := h.CachingClient.Get(cardName)
+	val, err := h.Cache.Get(cardName)
 	if err != nil {
-		prices, err := cardsinfo.GetPrices(cardName)
+		prices, err := h.InfoFetcher.GetPrices(cardName)
 		if err != nil {
 			return "", err
 		}
-		message := cardsinfo.FormatCardPrices(cardName, prices)
-		h.CachingClient.Set(cardName, message)
+		message := h.InfoFetcher.FormatCardPrices(cardName, prices)
+		h.Cache.Set(cardName, message)
 		return message, nil
 	}
 	return val, nil
@@ -104,10 +117,10 @@ func (h *Handler) getCardNameByCommand(command string) (string, error) {
 		}
 		set := split[1]
 		number := split[2]
-		name = cardsinfo.GetNameByCardId(set, number)
+		name = h.InfoFetcher.GetNameByCardId(set, number)
 	default:
 		dict, _ := os.Open(h.DictPath)
-		name = cardsinfo.GetOriginalName(command, dict)
+		name = h.InfoFetcher.GetOriginalName(command, dict)
 	}
 	return name, nil
 }
