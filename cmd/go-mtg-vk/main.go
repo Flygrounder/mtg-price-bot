@@ -4,18 +4,32 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/caching"
 	"gitlab.com/flygrounder/go-mtg-vk/internal/vk"
 )
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	logFile, _ := os.OpenFile("logs/errors.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
-	log.SetOutput(logFile)
 	r := gin.Default()
-	r.POST("callback/message", vk.HandleMessage)
+
+	groupId, _ := strconv.ParseInt(os.Getenv("VK_GROUP_ID"), 10, 64)
+	handler := vk.Handler{
+		Sender: &vk.ApiSender{
+			Token:              os.Getenv("VK_TOKEN"),
+		},
+		Logger: log.New(os.Stdout, "", 0),
+		SecretKey:          os.Getenv("VK_SECRET_KEY"),
+		GroupId:            groupId,
+		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
+		DictPath: "./assets/additional_cards.json",
+		CachingClient: caching.GetClient(),
+	}
+
+	r.POST("callback/message", handler.HandleMessage)
 	_ = r.Run(":8000")
 }
