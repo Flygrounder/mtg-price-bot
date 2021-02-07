@@ -11,11 +11,11 @@ import (
 )
 
 func TestGetClient(t *testing.T) {
-	c := GetClient()
-	assert.Equal(t, CacheExpiration, c.Expiration)
-	assert.Equal(t, 0, c.Storage.Options().DB)
-	assert.Equal(t, HostName, c.Storage.Options().Addr)
-	assert.Equal(t, Password, c.Storage.Options().Password)
+	c := NewClient("addr", "123", time.Hour, 1)
+	assert.Equal(t, time.Hour, c.Expiration)
+	assert.Equal(t, 1, c.Storage.Options().DB)
+	assert.Equal(t, "addr", c.Storage.Options().Addr)
+	assert.Equal(t, "123", c.Storage.Options().Password)
 }
 
 func TestGetSet(t *testing.T) {

@@ -28,7 +28,7 @@ func main() {
 		GroupId:            groupId,
 		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
 		DictPath:           "./assets/additional_cards.json",
-		Cache:              caching.GetClient(),
+		Cache:              caching.NewClient("redis:6379", "", time.Hour*24, 0),
 		InfoFetcher:        &cardsinfo.Fetcher{},
 	}
 

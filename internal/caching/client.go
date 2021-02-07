@@ -10,19 +10,15 @@ type CacheClient struct {
 	Expiration time.Duration
 }
 
-func GetClient() *CacheClient {
-	client := new(CacheClient)
-	client.Init()
-	return client
-}
-
-func (client *CacheClient) Init() {
-	client.Storage = redis.NewClient(&redis.Options{
-		Addr:     HostName,
-		Password: Password,
-		DB:       0,
-	})
-	client.Expiration = CacheExpiration
+func NewClient(addr string, passwd string, expiration time.Duration, db int) *CacheClient {
+	return &CacheClient{
+		Storage: redis.NewClient(&redis.Options{
+			Addr:     addr,
+			Password: passwd,
+			DB:       db,
+		}),
+		Expiration: expiration,
+	}
 }
 
 func (client *CacheClient) Set(key string, value string) {
