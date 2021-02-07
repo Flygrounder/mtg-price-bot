@@ -23,7 +23,7 @@ func (f *Fetcher) GetOriginalName(name string) string {
 	path := scryfallUrl + "/cards/named?fuzzy=" + applyFilters(name)
 	result := getCardByUrl(path)
 	if result == "" && f.Dict != nil {
-		result, _ = dicttranslate.FindFromReader(name, f.Dict, 5)
+		result, _ = dicttranslate.Find(name, f.Dict, 5)
 	}
 	return result
 }

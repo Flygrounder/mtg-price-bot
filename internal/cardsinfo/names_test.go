@@ -1,11 +1,9 @@
 package cardsinfo
 
 import (
-	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 	"net/http"
-	"strings"
 	"testing"
 )
 
@@ -31,18 +29,18 @@ func TestGetOriginalName_Scryfall(t *testing.T) {
 	assert.Equal(t, "Result Card", name)
 }
 
-func TestGetOriginalName_Dict(t *testing.T) {
+func TestGetOriginalName_DictTwice(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(card{})
-	serialized, _ := json.Marshal(map[string]string{
-		"card": "Card",
-	})
-	dict := strings.NewReader(string(serialized))
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Persist().Reply(http.StatusOK).JSON(card{})
 	f := &Fetcher{
-		Dict: dict,
+		Dict: map[string]string{
+			"card": "Card",
+		},
 	}
 	name := f.GetOriginalName("card")
+	assert.Equal(t, "Card", name)
+	name = f.GetOriginalName("card")
 	assert.Equal(t, "Card", name)
 }
 

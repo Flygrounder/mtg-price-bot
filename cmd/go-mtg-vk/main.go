@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
@@ -20,6 +22,9 @@ func main() {
 
 	groupId, _ := strconv.ParseInt(os.Getenv("VK_GROUP_ID"), 10, 64)
 	dict, _ := os.Open("./assets/additional_cards.json")
+	dictBytes, _ := ioutil.ReadAll(dict)
+	var dictMap map[string]string
+	_ = json.Unmarshal(dictBytes, &dictMap)
 	handler := vk.Handler{
 		Sender: &vk.ApiSender{
 			Token: os.Getenv("VK_TOKEN"),
@@ -30,7 +35,7 @@ func main() {
 		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
 		Cache:              caching.NewClient("redis:6379", "", time.Hour*24, 0),
 		InfoFetcher: &cardsinfo.Fetcher{
-			Dict: dict,
+			Dict: dictMap,
 		},
 	}
 
