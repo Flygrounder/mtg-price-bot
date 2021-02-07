@@ -12,7 +12,7 @@ import (
 func TestGetNameByCardId(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(ScryfallUrl + "/set/1").Reply(http.StatusOK).JSON(Card{
+	gock.New(scryfallUrl + "/set/1").Reply(http.StatusOK).JSON(card{
 		Name: "card",
 	})
 	f := &Fetcher{}
@@ -23,7 +23,7 @@ func TestGetNameByCardId(t *testing.T) {
 func TestGetOriginalName_Scryfall(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(Card{
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(card{
 		Name: "Result Card",
 	})
 	f := &Fetcher{}
@@ -34,7 +34,7 @@ func TestGetOriginalName_Scryfall(t *testing.T) {
 func TestGetOriginalName_Dict(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(Card{})
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(card{})
 	serialized, _ := json.Marshal(map[string]string{
 		"card": "Card",
 	})
@@ -49,7 +49,7 @@ func TestGetOriginalName_Dict(t *testing.T) {
 func TestGetOriginalName_BadJson(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).BodyString("}")
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).BodyString("}")
 	f := &Fetcher{}
 	name := f.GetOriginalName("card")
 	assert.Equal(t, "", name)
@@ -58,7 +58,7 @@ func TestGetOriginalName_BadJson(t *testing.T) {
 func TestGetOriginalName_DoubleSide(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(Card{
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(card{
 		Name:   "Legion's Landing // Adanto, the First Fort",
 		Layout: "transform",
 	})

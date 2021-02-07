@@ -13,7 +13,7 @@ import (
 func TestApiSender_Send_OK(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(SendMessageUrl).MatchParams(
+	gock.New(sendMessageUrl).MatchParams(
 		map[string]string{
 			"access_token": "token",
 			"peer_id":      "1",
@@ -23,28 +23,28 @@ func TestApiSender_Send_OK(t *testing.T) {
 	).ParamPresent("random_id").Reply(http.StatusOK)
 
 	sender := ApiSender{Token: "token"}
-	sender.Send(1, "msg")
+	sender.send(1, "msg")
 	assert.False(t, gock.HasUnmatchedRequest())
 }
 
 func TestApiSender_Send_NotOK(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(SendMessageUrl).Reply(http.StatusInternalServerError)
+	gock.New(sendMessageUrl).Reply(http.StatusInternalServerError)
 
 	b := &bytes.Buffer{}
 	sender := ApiSender{
 		Token:  "token",
 		Logger: log.New(b, "", 0),
 	}
-	sender.Send(1, "msg")
+	sender.send(1, "msg")
 	assert.True(t, strings.Contains(b.String(), "[error]"))
 }
 
 func TestApiSender_Send_ErrorCode(t *testing.T) {
 	defer gock.Off()
 
-	gock.New(SendMessageUrl).Reply(http.StatusOK).JSON(
+	gock.New(sendMessageUrl).Reply(http.StatusOK).JSON(
 		map[string]interface{}{
 			"error": map[string]interface{}{
 				"error_code": 100,
@@ -58,6 +58,6 @@ func TestApiSender_Send_ErrorCode(t *testing.T) {
 		Token:  "token",
 		Logger: log.New(b, "", 0),
 	}
-	sender.Send(1, "msg")
+	sender.send(1, "msg")
 	assert.True(t, strings.Contains(b.String(), "[error]"))
 }

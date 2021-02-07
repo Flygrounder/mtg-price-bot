@@ -11,10 +11,10 @@ import (
 	"strings"
 )
 
-const SendMessageUrl = "https://api.vk.com/method/messages.send"
+const sendMessageUrl = "https://api.vk.com/method/messages.send"
 
-type Sender interface {
-	Send(userId int64, message string)
+type sender interface {
+	send(userId int64, message string)
 }
 
 type ApiSender struct {
@@ -31,7 +31,7 @@ type errorResponse struct {
 	ErrorMsg  string `json:"error_msg"`
 }
 
-func (s *ApiSender) Send(userId int64, message string) {
+func (s *ApiSender) send(userId int64, message string) {
 	randomId := rand.Int63()
 	params := []string{
 		"access_token=" + s.Token,
@@ -41,7 +41,7 @@ func (s *ApiSender) Send(userId int64, message string) {
 		"random_id=" + strconv.FormatInt(randomId, 10),
 	}
 	joined := strings.Join(params, "&")
-	reqUrl := SendMessageUrl + "?" + joined
+	reqUrl := sendMessageUrl + "?" + joined
 	resp, err := http.Get(reqUrl)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		s.Logger.Printf("[error] Could not Send message. User: %d", userId)

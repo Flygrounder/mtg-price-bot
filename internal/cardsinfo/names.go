@@ -9,26 +9,26 @@ import (
 	"strings"
 )
 
-const ScryfallUrl = "https://api.scryfall.com"
+const scryfallUrl = "https://api.scryfall.com"
 
 func (f *Fetcher) GetNameByCardId(set string, number string) string {
 	/*
 		Note: number is string because some cards contain letters in their numbers.
 	*/
-	path := ScryfallUrl + "/cards/" + strings.ToLower(set) + "/" + number
-	return GetCardByUrl(path)
+	path := scryfallUrl + "/cards/" + strings.ToLower(set) + "/" + number
+	return getCardByUrl(path)
 }
 
 func (f *Fetcher) GetOriginalName(name string) string {
-	path := ScryfallUrl + "/cards/named?fuzzy=" + ApplyFilters(name)
-	result := GetCardByUrl(path)
+	path := scryfallUrl + "/cards/named?fuzzy=" + applyFilters(name)
+	result := getCardByUrl(path)
 	if result == "" && f.Dict != nil {
 		result, _ = dicttranslate.FindFromReader(name, f.Dict, 5)
 	}
 	return result
 }
 
-func ApplyFilters(name string) string {
+func applyFilters(name string) string {
 	/*
 		Despite of the rules of Russian language, letter ё is replaced with e on cards
 		Sometimes it leads to wrong search results
@@ -37,13 +37,13 @@ func ApplyFilters(name string) string {
 	return url.QueryEscape(name)
 }
 
-func GetCardByUrl(path string) string {
+func getCardByUrl(path string) string {
 	response, _ := http.Get(path)
 	defer func() {
 		_ = response.Body.Close()
 	}()
 	data, _ := ioutil.ReadAll(response.Body)
-	var v Card
+	var v card
 	err := json.Unmarshal(data, &v)
 	if err != nil {
 		return ""

@@ -7,28 +7,26 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 type Handler struct {
-	Sender             Sender
+	Sender             sender
 	Logger             *log.Logger
 	SecretKey          string
 	GroupId            int64
 	ConfirmationString string
 	DictPath           string
-	Cache              CardCache
-	InfoFetcher        CardInfoFetcher
+	Cache              cardCache
+	InfoFetcher        cardInfoFetcher
 }
 
-type CardInfoFetcher interface {
-	GetPrices(name string) ([]cardsinfo.CardPrice, error)
-	FormatCardPrices(name string, prices []cardsinfo.CardPrice) string
+type cardInfoFetcher interface {
+	GetFormattedCardPrices(name string) (string, error)
 	GetNameByCardId(set string, number string) string
 	GetOriginalName(name string) string
 }
 
-type CardCache interface {
+type cardCache interface {
 	Get(cardName string) (string, error)
 	Set(cardName string, message string)
 }
@@ -69,19 +67,19 @@ func (h *Handler) HandleMessage(c *gin.Context) {
 func (h *Handler) handleSearch(req *messageRequest) {
 	cardName, err := h.getCardNameByCommand(req.Object.Body)
 	if err != nil {
-		h.Sender.Send(req.Object.UserId, incorrectMessage)
+		h.Sender.send(req.Object.UserId, incorrectMessage)
 		h.Logger.Printf("[info] Not correct command. Message: %s user input: %s", err.Error(), req.Object.Body)
 	} else if cardName == "" {
-		h.Sender.Send(req.Object.UserId, cardNotFoundMessage)
+		h.Sender.send(req.Object.UserId, cardNotFoundMessage)
 		h.Logger.Printf("[info] Could not find card. User input: %s", req.Object.Body)
 	} else {
 		message, err := h.getMessage(cardName)
 		if err != nil {
-			h.Sender.Send(req.Object.UserId, pricesUnavailableMessage)
+			h.Sender.send(req.Object.UserId, pricesUnavailableMessage)
 			h.Logger.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
-		h.Sender.Send(req.Object.UserId, message)
+		h.Sender.send(req.Object.UserId, message)
 	}
 }
 
@@ -94,11 +92,10 @@ func (h *Handler) handleConfirmation(c *gin.Context, req *messageRequest) {
 func (h *Handler) getMessage(cardName string) (string, error) {
 	val, err := h.Cache.Get(cardName)
 	if err != nil {
-		prices, err := h.InfoFetcher.GetPrices(cardName)
+		message, err := h.InfoFetcher.GetFormattedCardPrices(cardName)
 		if err != nil {
 			return "", err
 		}
-		message := h.InfoFetcher.FormatCardPrices(cardName, prices)
 		h.Cache.Set(cardName, message)
 		return message, nil
 	}

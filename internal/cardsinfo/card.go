@@ -5,26 +5,22 @@ import (
 	"strings"
 )
 
-type CardPrice interface {
-	Format() string
+type scgCardPrice struct {
+	price   string
+	edition string
+	link    string
 }
 
-type ScgCardPrice struct {
-	Price   string
-	Edition string
-	Link    string
+func (s *scgCardPrice) format() string {
+	return fmt.Sprintf("%v: %v\n%v\n", s.edition, s.price, s.link)
 }
 
-func (s *ScgCardPrice) Format() string {
-	return fmt.Sprintf("%v: %v\n%v\n", s.Edition, s.Price, s.Link)
-}
-
-type Card struct {
+type card struct {
 	Name   string `json:"name"`
 	Layout string `json:"layout"`
 }
 
-func (c *Card) getName() string {
+func (c *card) getName() string {
 	if c.Layout == "transform" {
 		return strings.Replace(c.Name, "//", "|", 1)
 	}
