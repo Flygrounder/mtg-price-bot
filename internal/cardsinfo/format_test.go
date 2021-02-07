@@ -6,7 +6,8 @@ import (
 )
 
 func TestFormatCardPrices(t *testing.T) {
-	formatted := FormatCardPrices("card", []CardPrice{
+	f := &Fetcher{}
+	formatted := f.FormatCardPrices("card", []CardPrice{
 		&ScgCardPrice{
 			Price:   "1.5$",
 			Edition: "ED",

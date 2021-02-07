@@ -10,6 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetClient(t *testing.T) {
+	c := GetClient()
+	assert.Equal(t, CacheExpiration, c.Expiration)
+	assert.Equal(t, 0, c.Storage.Options().DB)
+	assert.Equal(t, HostName, c.Storage.Options().Addr)
+	assert.Equal(t, Password, c.Storage.Options().Password)
+}
+
 func TestGetSet(t *testing.T) {
 	client, s := getTestClient()
 	defer s.Close()

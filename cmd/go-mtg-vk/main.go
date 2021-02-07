@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 	"log"
 	"math/rand"
 	"os"
@@ -28,6 +29,7 @@ func main() {
 		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
 		DictPath:           "./assets/additional_cards.json",
 		Cache:              caching.GetClient(),
+		InfoFetcher:        &cardsinfo.Fetcher{},
 	}
 
 	r.POST("callback/message", handler.HandleMessage)

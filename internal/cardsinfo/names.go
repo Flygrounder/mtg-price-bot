@@ -12,7 +12,7 @@ import (
 
 const ScryfallUrl = "https://api.scryfall.com"
 
-func GetNameByCardId(set string, number string) string {
+func (f *Fetcher) GetNameByCardId(set string, number string) string {
 	/*
 		Note: number is string because some cards contain letters in their numbers.
 	*/
@@ -20,7 +20,7 @@ func GetNameByCardId(set string, number string) string {
 	return GetCardByUrl(path)
 }
 
-func GetOriginalName(name string, dict io.Reader) string {
+func (f *Fetcher) GetOriginalName(name string, dict io.Reader) string {
 	path := ScryfallUrl + "/cards/named?fuzzy=" + ApplyFilters(name)
 	result := GetCardByUrl(path)
 	if result == "" && dict != nil {

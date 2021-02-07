@@ -14,7 +14,8 @@ func TestGetPrices_Ok(t *testing.T) {
 
 	file, _ := os.Open("test_data/AcademyRuinsTest.html")
 	gock.New(scgSearchUrlTemplate + "card").Reply(http.StatusOK).Body(file)
-	prices, err := GetPrices("card")
+	f := &Fetcher{}
+	prices, err := f.GetPrices("card")
 	assert.Nil(t, err)
 	assert.Equal(t, []CardPrice{
 		&ScgCardPrice{
@@ -49,7 +50,8 @@ func TestGetPrices_Unavailable(t *testing.T) {
 	defer gock.Off()
 
 	gock.New(scgSearchUrlTemplate + "card").Reply(http.StatusBadGateway)
-	_, err := GetPrices("card")
+	f := &Fetcher{}
+	_, err := f.GetPrices("card")
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +60,8 @@ func TestGetPrices_Empty(t *testing.T) {
 
 	file, _ := os.Open("test_data/EmptyTest.html")
 	gock.New(scgSearchUrlTemplate + "card").Reply(http.StatusOK).Body(file)
-	prices, err := GetPrices("card")
+	f := &Fetcher{}
+	prices, err := f.GetPrices("card")
 	assert.Nil(t, err)
 	assert.Nil(t, prices)
 }

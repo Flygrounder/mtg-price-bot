@@ -10,13 +10,8 @@ type CacheClient struct {
 	Expiration time.Duration
 }
 
-var client *CacheClient
-
 func GetClient() *CacheClient {
-	if client != nil {
-		return client
-	}
-	client = new(CacheClient)
+	client := new(CacheClient)
 	client.Init()
 	return client
 }
