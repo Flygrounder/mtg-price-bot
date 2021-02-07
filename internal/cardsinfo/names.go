@@ -39,19 +39,13 @@ func ApplyFilters(name string) string {
 }
 
 func GetCardByUrl(path string) string {
-	response, err := http.Get(path)
-	if err != nil {
-		return ""
-	}
+	response, _ := http.Get(path)
 	defer func() {
 		_ = response.Body.Close()
 	}()
-	data, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return ""
-	}
+	data, _ := ioutil.ReadAll(response.Body)
 	var v Card
-	err = json.Unmarshal(data, &v)
+	err := json.Unmarshal(data, &v)
 	if err != nil {
 		return ""
 	}
