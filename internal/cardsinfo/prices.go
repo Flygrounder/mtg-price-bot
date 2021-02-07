@@ -1,7 +1,6 @@
 package cardsinfo
 
 import (
-	"fmt"
 	"net/url"
 
 	"github.com/antchfx/htmlquery"
@@ -9,7 +8,7 @@ import (
 )
 
 const scgDomain = "https://starcitygames.com"
-const scgSearchUrlTemplate = "https://starcitygames.hawksearch.com/sites/starcitygames/?search_query=%v"
+const scgSearchUrlTemplate = "https://starcitygames.hawksearch.com/sites/starcitygames/?search_query="
 
 func GetPrices(name string) ([]CardPrice, error) {
 	prices, err := GetPricesScg(name)
@@ -24,7 +23,7 @@ func GetPrices(name string) ([]CardPrice, error) {
 
 func GetPricesScg(name string) ([]CardPrice, error) {
 	escapedName := url.QueryEscape(name)
-	searchUrl := fmt.Sprintf(scgSearchUrlTemplate, escapedName)
+	searchUrl := scgSearchUrlTemplate + escapedName
 	node, err := htmlquery.LoadURL(searchUrl)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot load url")

@@ -40,10 +40,22 @@ func TestGetOriginalName_Dict(t *testing.T) {
 	name := GetOriginalName("card", dict)
 	assert.Equal(t, "Card", name)
 }
+
 func TestGetOriginalName_BadJson(t *testing.T) {
 	defer gock.Off()
 
 	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).BodyString("}")
 	name := GetOriginalName("card", nil)
 	assert.Equal(t, "", name)
+}
+
+func TestGetOriginalName_DoubleSide(t *testing.T) {
+	defer gock.Off()
+
+	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).JSON(Card{
+		Name:   "Legion's Landing // Adanto, the First Fort",
+		Layout: "transform",
+	})
+	name := GetOriginalName("card", nil)
+	assert.Equal(t, "Legion's Landing | Adanto, the First Fort", name)
 }
