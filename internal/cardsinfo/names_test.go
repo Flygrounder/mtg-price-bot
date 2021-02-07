@@ -27,7 +27,7 @@ func TestGetOriginalName_Scryfall(t *testing.T) {
 		Name: "Result Card",
 	})
 	f := &Fetcher{}
-	name := f.GetOriginalName("card", nil)
+	name := f.GetOriginalName("card")
 	assert.Equal(t, "Result Card", name)
 }
 
@@ -39,8 +39,10 @@ func TestGetOriginalName_Dict(t *testing.T) {
 		"card": "Card",
 	})
 	dict := strings.NewReader(string(serialized))
-	f := &Fetcher{}
-	name := f.GetOriginalName("card", dict)
+	f := &Fetcher{
+		Dict: dict,
+	}
+	name := f.GetOriginalName("card")
 	assert.Equal(t, "Card", name)
 }
 
@@ -49,7 +51,7 @@ func TestGetOriginalName_BadJson(t *testing.T) {
 
 	gock.New(ScryfallUrl + "/cards/named?fuzzy=card").Reply(http.StatusOK).BodyString("}")
 	f := &Fetcher{}
-	name := f.GetOriginalName("card", nil)
+	name := f.GetOriginalName("card")
 	assert.Equal(t, "", name)
 }
 
@@ -61,6 +63,6 @@ func TestGetOriginalName_DoubleSide(t *testing.T) {
 		Layout: "transform",
 	})
 	f := &Fetcher{}
-	name := f.GetOriginalName("card", nil)
+	name := f.GetOriginalName("card")
 	assert.Equal(t, "Legion's Landing | Adanto, the First Fort", name)
 }

@@ -2,10 +2,8 @@ package vk
 
 import (
 	"errors"
-	"io"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +25,7 @@ type CardInfoFetcher interface {
 	GetPrices(name string) ([]cardsinfo.CardPrice, error)
 	FormatCardPrices(name string, prices []cardsinfo.CardPrice) string
 	GetNameByCardId(set string, number string) string
-	GetOriginalName(name string, dict io.Reader) string
+	GetOriginalName(name string) string
 }
 
 type CardCache interface {
@@ -119,8 +117,7 @@ func (h *Handler) getCardNameByCommand(command string) (string, error) {
 		number := split[2]
 		name = h.InfoFetcher.GetNameByCardId(set, number)
 	default:
-		dict, _ := os.Open(h.DictPath)
-		name = h.InfoFetcher.GetOriginalName(command, dict)
+		name = h.InfoFetcher.GetOriginalName(command)
 	}
 	return name, nil
 }

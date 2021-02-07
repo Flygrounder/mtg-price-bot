@@ -1,3 +1,7 @@
 package cardsinfo
 
-type Fetcher struct{}
+import "io"
+
+type Fetcher struct {
+	Dict io.Reader
+}

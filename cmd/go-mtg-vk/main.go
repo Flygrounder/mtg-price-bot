@@ -19,6 +19,7 @@ func main() {
 	r := gin.Default()
 
 	groupId, _ := strconv.ParseInt(os.Getenv("VK_GROUP_ID"), 10, 64)
+	dict, _ := os.Open("./assets/additional_cards.json")
 	handler := vk.Handler{
 		Sender: &vk.ApiSender{
 			Token: os.Getenv("VK_TOKEN"),
@@ -27,9 +28,10 @@ func main() {
 		SecretKey:          os.Getenv("VK_SECRET_KEY"),
 		GroupId:            groupId,
 		ConfirmationString: os.Getenv("VK_CONFIRMATION_STRING"),
-		DictPath:           "./assets/additional_cards.json",
 		Cache:              caching.NewClient("redis:6379", "", time.Hour*24, 0),
-		InfoFetcher:        &cardsinfo.Fetcher{},
+		InfoFetcher: &cardsinfo.Fetcher{
+			Dict: dict,
+		},
 	}
 
 	r.POST("callback/message", handler.HandleMessage)
