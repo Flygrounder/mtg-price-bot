@@ -2,6 +2,7 @@ package cardsinfo
 
 import (
 	"net/url"
+	"strings"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/pkg/errors"
@@ -33,20 +34,20 @@ func getPricesScg(name string) ([]scgCardPrice, error) {
 	for _, block := range blocks {
 		price := scgCardPrice{}
 		linkNode := htmlquery.FindOne(block, "//h2/a")
-		for _, attr := range linkNode.Attr {
-			if attr.Key == "href" {
-				price.link = scgDomain + attr.Val
-				break
-			}
-		}
+		price.link = scgDomain + htmlquery.SelectAttr(linkNode, "href")
 		editionNode := htmlquery.FindOne(block, "//p[@class=\"hawk-results-item__category\"]/a")
-		if editionNode.FirstChild != nil {
-			price.edition = editionNode.FirstChild.Data
+		if editionNode.FirstChild == nil {
+			continue
 		}
+		if !strings.HasPrefix(htmlquery.SelectAttr(editionNode, "href"), "/shop/singles/") {
+			continue
+		}
+		price.edition = editionNode.FirstChild.Data
 		priceNode := htmlquery.FindOne(block, "//span[@class='hawk-old-price']|//div[contains(concat(' ',normalize-space(@class),' '),' hawk-results-item__options-table-cell--price ')]")
-		if priceNode.FirstChild != nil {
-			price.price = priceNode.FirstChild.Data
+		if priceNode.FirstChild == nil {
+			continue
 		}
+		price.price = priceNode.FirstChild.Data
 		results = append(results, price)
 	}
 	return results, nil
