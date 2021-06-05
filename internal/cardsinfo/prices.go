@@ -36,17 +36,11 @@ func getPricesScg(name string) ([]scgCardPrice, error) {
 		linkNode := htmlquery.FindOne(block, "//h2/a")
 		price.link = scgDomain + htmlquery.SelectAttr(linkNode, "href")
 		editionNode := htmlquery.FindOne(block, "//p[@class=\"hawk-results-item__category\"]/a")
-		if editionNode.FirstChild == nil {
-			continue
-		}
 		if !strings.HasPrefix(htmlquery.SelectAttr(editionNode, "href"), "/shop/singles/") {
 			continue
 		}
 		price.edition = editionNode.FirstChild.Data
 		priceNode := htmlquery.FindOne(block, "//span[@class='hawk-old-price']|//div[contains(concat(' ',normalize-space(@class),' '),' hawk-results-item__options-table-cell--price ')]")
-		if priceNode.FirstChild == nil {
-			continue
-		}
 		price.price = priceNode.FirstChild.Data
 		results = append(results, price)
 	}
