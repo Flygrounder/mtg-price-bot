@@ -1,11 +1,12 @@
 package cardsinfo
 
 import (
-	"github.com/stretchr/testify/assert"
-	"gopkg.in/h2non/gock.v1"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"gopkg.in/h2non/gock.v1"
 )
 
 func TestFetcher_GetFormattedCardPrices_Error(t *testing.T) {
@@ -25,7 +26,7 @@ func TestFetcher_GetFormattedCardPrices_Empty(t *testing.T) {
 	f := &Fetcher{}
 	msg, err := f.GetFormattedCardPrices("card")
 	assert.Nil(t, err)
-	assert.Equal(t, "Оригинальное название: card\nРезультатов: 0\n", msg)
+	assert.Equal(t, "Оригинальное название: card\n\nЦен не найдено\n", msg)
 }
 
 func TestFormatCardPrices(t *testing.T) {
@@ -37,5 +38,5 @@ func TestFormatCardPrices(t *testing.T) {
 			link:    "scg.com",
 		},
 	})
-	assert.Equal(t, "Оригинальное название: card\nРезультатов: 1\n1. ED: 1.5$\nscg.com\n", formatted)
+	assert.Equal(t, "Оригинальное название: card\n\n1. ED: 1.5$\nscg.com\n", formatted)
 }

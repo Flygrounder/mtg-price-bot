@@ -13,10 +13,12 @@ func (f *Fetcher) GetFormattedCardPrices(name string) (string, error) {
 }
 
 func (f *Fetcher) formatCardPrices(name string, prices []scgCardPrice) string {
-	message := fmt.Sprintf("Оригинальное название: %v\n", name)
-	message += fmt.Sprintf("Результатов: %v\n", len(prices))
+	message := fmt.Sprintf("Оригинальное название: %v\n\n", name)
 	for i, v := range prices {
 		message += fmt.Sprintf("%v. %v", i+1, v.format())
+	}
+	if len(prices) == 0 {
+	    message += "Цен не найдено\n"
 	}
 	return message
 }
