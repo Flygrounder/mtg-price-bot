@@ -2,12 +2,13 @@ package vk
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/assert"
-	"gopkg.in/h2non/gock.v1"
 	"log"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"gopkg.in/h2non/gock.v1"
 )
 
 func TestApiSender_Send_OK(t *testing.T) {
@@ -15,10 +16,11 @@ func TestApiSender_Send_OK(t *testing.T) {
 
 	gock.New(sendMessageUrl).MatchParams(
 		map[string]string{
-			"access_token": "token",
-			"peer_id":      "1",
-			"message":      "msg",
-			"v":            "5.95",
+			"access_token":     "token",
+			"peer_id":          "1",
+			"message":          "msg",
+			"v":                "5.95",
+			"dont_parse_links": "1",
 		},
 	).ParamPresent("random_id").Reply(http.StatusOK)
 

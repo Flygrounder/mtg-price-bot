@@ -39,6 +39,7 @@ func (s *ApiSender) send(userId int64, message string) {
 		"message=" + url.QueryEscape(message),
 		"v=5.95",
 		"random_id=" + strconv.FormatInt(randomId, 10),
+		"dont_parse_links=1",
 	}
 	joined := strings.Join(params, "&")
 	reqUrl := sendMessageUrl + "?" + joined
