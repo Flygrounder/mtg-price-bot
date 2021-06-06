@@ -3,6 +3,8 @@ package scenario
 import (
 	"bytes"
 	"log"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 type TestScenarioCtx struct {
@@ -21,8 +23,14 @@ func GetTestScenarioCtx() TestScenarioCtx {
 			Logger:      log.New(buf, "", 0),
 			InfoFetcher: &testInfoFetcher{},
 			Cache: &testCache{
-				table: map[string]string{
-					"good": "good",
+				table: map[string][]cardsinfo.ScgCardPrice{
+					"good": {
+						{
+							Price:   "1",
+							Edition: "alpha",
+							Link:    "scg",
+						},
+					},
 				},
 			},
 		},

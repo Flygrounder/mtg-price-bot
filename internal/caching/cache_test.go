@@ -8,6 +8,7 @@ import (
 	"github.com/alicebob/miniredis/v2"
 	"github.com/go-redis/redis"
 	"github.com/stretchr/testify/assert"
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 func TestGetClient(t *testing.T) {
@@ -23,7 +24,13 @@ func TestGetSet(t *testing.T) {
 	defer s.Close()
 
 	keyName := "test_key"
-	value := "test_value"
+	value := []cardsinfo.ScgCardPrice{
+		{
+			Price:   "1",
+			Edition: "Alpha",
+			Link:    "scg",
+		},
+	}
 	client.Set(keyName, value)
 	val, err := client.Get(keyName)
 	assert.Nil(t, err)
@@ -36,11 +43,11 @@ func TestExpiration(t *testing.T) {
 
 	client.Expiration = time.Millisecond
 	keyName := "test_key"
-	value := "test_value"
+	var value []cardsinfo.ScgCardPrice
 	client.Set(keyName, value)
 	s.FastForward(time.Millisecond * 2)
 	val, err := client.Get(keyName)
-	assert.Zero(t, val)
+	assert.Nil(t, val)
 	assert.NotNil(t, err)
 }
 

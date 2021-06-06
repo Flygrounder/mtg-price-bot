@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 	"strings"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 const (
@@ -13,10 +15,10 @@ const (
 )
 
 type Scenario struct {
-    Sender Sender
-    Logger             *log.Logger
-    InfoFetcher        CardInfoFetcher
-    Cache              CardCache
+	Sender      Sender
+	Logger      *log.Logger
+	InfoFetcher CardInfoFetcher
+	Cache       CardCache
 }
 
 type UserMessage struct {
@@ -25,18 +27,19 @@ type UserMessage struct {
 }
 
 type CardCache interface {
-	Get(cardName string) (string, error)
-	Set(cardName string, message string)
+	Get(cardName string) ([]cardsinfo.ScgCardPrice, error)
+	Set(cardName string, prices []cardsinfo.ScgCardPrice)
 }
 
 type CardInfoFetcher interface {
-	GetFormattedCardPrices(name string) (string, error)
 	GetNameByCardId(set string, number string) string
 	GetOriginalName(name string) string
+	GetPrices(name string) ([]cardsinfo.ScgCardPrice, error)
 }
 
 type Sender interface {
 	Send(userId int64, message string)
+	SendPrices(userId int64, cardName string, prices []cardsinfo.ScgCardPrice)
 }
 
 func (s *Scenario) HandleSearch(msg *UserMessage) {
@@ -48,27 +51,20 @@ func (s *Scenario) HandleSearch(msg *UserMessage) {
 		s.Sender.Send(msg.UserId, cardNotFoundMessage)
 		s.Logger.Printf("[info] Could not find card. User input: %s", msg.Body)
 	} else {
-		message, err := s.getMessage(cardName)
+		prices, err := s.Cache.Get(cardName)
+		if err == nil {
+			s.Sender.SendPrices(msg.UserId, cardName, prices)
+			return
+		}
+		prices, err = s.InfoFetcher.GetPrices(cardName)
 		if err != nil {
 			s.Sender.Send(msg.UserId, pricesUnavailableMessage)
 			s.Logger.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
-		s.Sender.Send(msg.UserId, message)
+		s.Cache.Set(cardName, prices)
+		s.Sender.SendPrices(msg.UserId, cardName, prices)
 	}
-}
-
-func (s *Scenario) getMessage(cardName string) (string, error) {
-	val, err := s.Cache.Get(cardName)
-	if err != nil {
-		message, err := s.InfoFetcher.GetFormattedCardPrices(cardName)
-		if err != nil {
-			return "", err
-		}
-		s.Cache.Set(cardName, message)
-		return message, nil
-	}
-	return val, nil
 }
 
 func (s *Scenario) getCardNameByCommand(command string) (string, error) {

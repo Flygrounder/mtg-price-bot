@@ -10,8 +10,8 @@ import (
 func TestScenario_HandleSearch_BadCommand(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
 	testCtx.Scenario.HandleSearch(&UserMessage{
-	    Body:   "!s",
-	    UserId: 1,
+		Body:   "!s",
+		UserId: 1,
 	})
 	assert.Equal(t, []testMessage{
 		{
@@ -25,8 +25,8 @@ func TestScenario_HandleSearch_BadCommand(t *testing.T) {
 func TestScenario_HandleSearch_GoodCommand(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
 	testCtx.Scenario.HandleSearch(&UserMessage{
-	    Body:   "!s grn 228",
-	    UserId: 1,
+		Body:   "!s grn 228",
+		UserId: 1,
 	})
 	assert.Equal(t, []testMessage{
 		{
@@ -39,8 +39,8 @@ func TestScenario_HandleSearch_GoodCommand(t *testing.T) {
 func TestScenario_HandleSearch_NotFoundCard(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
 	testCtx.Scenario.HandleSearch(&UserMessage{
-	    Body:   "absolutely_random_card",
-	    UserId: 1,
+		Body:   "absolutely_random_card",
+		UserId: 1,
 	})
 	assert.Equal(t, []testMessage{
 		{
@@ -54,8 +54,8 @@ func TestScenario_HandleSearch_NotFoundCard(t *testing.T) {
 func TestScenario_HandleSearch_BadCard(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
 	testCtx.Scenario.HandleSearch(&UserMessage{
-	    Body:   "bad",
-	    UserId: 1,
+		Body:   "bad",
+		UserId: 1,
 	})
 	assert.Equal(t, []testMessage{
 		{
@@ -68,8 +68,8 @@ func TestScenario_HandleSearch_BadCard(t *testing.T) {
 func TestScenario_HandleSearch_Uncached(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
 	testCtx.Scenario.HandleSearch(&UserMessage{
-	    Body:   "uncached",
-	    UserId: 1,
+		Body:   "uncached",
+		UserId: 1,
 	})
 	assert.Equal(t, []testMessage{
 		{
@@ -77,6 +77,6 @@ func TestScenario_HandleSearch_Uncached(t *testing.T) {
 			message: "uncached",
 		},
 	}, testCtx.Sender.sent)
-	msg, _ := testCtx.Scenario.Cache.Get("uncached")
-	assert.Equal(t, "uncached", msg)
+	_, err := testCtx.Scenario.Cache.Get("uncached")
+	assert.Nil(t, err)
 }

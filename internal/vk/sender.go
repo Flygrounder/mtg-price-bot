@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 const sendMessageUrl = "https://api.vk.com/method/messages.send"
@@ -20,6 +22,11 @@ type sender interface {
 type ApiSender struct {
 	Token  string
 	Logger *log.Logger
+}
+
+func (s *ApiSender) SendPrices(userId int64, cardName string, prices []cardsinfo.ScgCardPrice) {
+	msg := formatCardPrices(cardName, prices)
+	s.Send(userId, msg)
 }
 
 type sendMessageResponse struct {

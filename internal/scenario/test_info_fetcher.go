@@ -2,15 +2,17 @@ package scenario
 
 import (
 	"errors"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
 )
 
 type testInfoFetcher struct{}
 
-func (t *testInfoFetcher) GetFormattedCardPrices(name string) (string, error) {
+func (t *testInfoFetcher) GetPrices(name string) ([]cardsinfo.ScgCardPrice, error) {
 	if name == "good" || name == "uncached" {
-		return name, nil
+		return nil, nil
 	}
-	return "", errors.New("test")
+	return nil, errors.New("test")
 }
 
 func (t *testInfoFetcher) GetNameByCardId(_ string, _ string) string {

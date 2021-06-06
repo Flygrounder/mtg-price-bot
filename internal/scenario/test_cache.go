@@ -1,19 +1,23 @@
 package scenario
 
-import "errors"
+import (
+	"errors"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
+)
 
 type testCache struct {
-	table map[string]string
+	table map[string][]cardsinfo.ScgCardPrice
 }
 
-func (t *testCache) Get(cardName string) (string, error) {
+func (t *testCache) Get(cardName string) ([]cardsinfo.ScgCardPrice, error) {
 	msg, ok := t.table[cardName]
 	if !ok {
-		return "", errors.New("test")
+		return nil, errors.New("test")
 	}
 	return msg, nil
 }
 
-func (t *testCache) Set(cardName string, message string) {
-	t.table[cardName] = message
+func (t *testCache) Set(cardName string, prices []cardsinfo.ScgCardPrice) {
+	t.table[cardName] = prices
 }

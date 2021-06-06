@@ -1,18 +1,13 @@
 package cardsinfo
 
 import (
-	"fmt"
 	"strings"
 )
 
-type scgCardPrice struct {
-	price   string
-	edition string
-	link    string
-}
-
-func (s *scgCardPrice) format() string {
-	return fmt.Sprintf("%v: %v\n%v\n", s.edition, s.price, s.link)
+type ScgCardPrice struct {
+	Price   string
+	Edition string
+	Link    string
 }
 
 type card struct {
