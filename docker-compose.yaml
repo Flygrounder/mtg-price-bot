@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-  web:
+  vk:
     image: flygrounder/go-mtg-vk:latest
     environment:
       - VK_TOKEN
@@ -11,6 +11,11 @@ services:
     ports:
       - "127.0.0.1:8888:8000"
     restart: "always"
+  telegram:
+      image: flygrounder/go-mtg-telegram:latest
+      environment:
+        - TG_TOKEN
+      restart: "always"
   redis:
     image: "redis:6.0.9"
     restart: "always"

@@ -28,15 +28,15 @@ func main() {
 	var dictMap map[string]string
 	_ = json.Unmarshal(dictBytes, &dictMap)
 	handler := vk.Handler{
-	    Scenario: &scenario.Scenario{
-		Sender: &vk.ApiSender{
-		    Token: os.Getenv("VK_TOKEN"),
-		},
-		Logger:             log.New(os.Stdout, "", 0),
-		Cache:              caching.NewClient("redis:6379", "", time.Hour*24, 0),
-		InfoFetcher: &cardsinfo.Fetcher{
-		    Dict: dictMap,
-		},
+		Scenario: &scenario.Scenario{
+			Sender: &vk.ApiSender{
+				Token: os.Getenv("VK_TOKEN"),
+			},
+			Logger: log.New(os.Stdout, "", 0),
+			Cache:  caching.NewClient("redis:6379", "", time.Hour*24, 0),
+			InfoFetcher: &cardsinfo.Fetcher{
+				Dict: dictMap,
+			},
 		},
 		SecretKey:          os.Getenv("VK_SECRET_KEY"),
 		GroupId:            groupId,

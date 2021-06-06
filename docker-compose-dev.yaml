@@ -1,7 +1,10 @@
 version: "3.3"
 services:
-  web:
-    build: .
+  vk:
+    build:
+        context: .
+        args:
+            VERSION: vk
     environment:
       - VK_TOKEN
       - VK_SECRET_KEY
@@ -11,6 +14,14 @@ services:
     ports:
       - "127.0.0.1:8888:8000"
     restart: "always"
+  telegram:
+      build:
+          context: .
+          args:
+              VERSION: telegram
+      environment:
+        - TG_TOKEN
+      restart: "always"
   redis:
     image: "redis:6.0.9"
     restart: "always"
