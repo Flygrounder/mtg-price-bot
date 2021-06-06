@@ -15,6 +15,8 @@ import (
 	"gitlab.com/flygrounder/go-mtg-vk/internal/telegram"
 )
 
+const welcomeMessage = "Здравствуйте, вас приветствует бот для поиска цен на карты MTG, введите название карты, которая вас интересует."
+
 func main() {
 	dict, _ := os.Open("./assets/additional_cards.json")
 	dictBytes, _ := ioutil.ReadAll(dict)
@@ -37,6 +39,11 @@ func main() {
 	updates, _ := bot.GetUpdatesChan(u)
 	for update := range updates {
 	    if update.Message == nil {
+		continue
+	    }
+
+	    if update.Message.Text == "/start" {
+		sender.Send(update.Message.Chat.ID, welcomeMessage)
 		continue
 	    }
 
