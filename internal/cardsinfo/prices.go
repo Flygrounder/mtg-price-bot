@@ -9,7 +9,7 @@ import (
 )
 
 const scgDomain = "https://starcitygames.com"
-const scgSearchUrlTemplate = "https://starcitygames.hawksearch.com/sites/starcitygames/?search_query="
+const scgSearchUrlTemplate = "https://starcitygames.hawksearch.com/sites/starcitygames/?tournament_legality=Legal&search_query="
 
 func (f *Fetcher) GetPrices(name string) ([]ScgCardPrice, error) {
 	prices, err := getPricesScg(name)
