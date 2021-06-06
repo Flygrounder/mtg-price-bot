@@ -1,8 +1,8 @@
 # MTG price bot
 ![Logo](/Logo.jpg)
 
-Бот в ВК: https://vk.com/mtg_vk_bot
-Бот в Telegram: https://t.me/MtgScgBot
+Бот в ВК: https://vk.com/mtg_vk_bot   
+Бот в Telegram: https://t.me/MtgScgBot  
 
 Ищите цены на карты MTG с сайта http://www.starcitygames.com/ не выходя из вашего любимого мессенджера.  
 Не нужно учить никаких команд, просто отправьте боту название карты на любом языке и он предложит вам цены на разные издания этой карты.  
