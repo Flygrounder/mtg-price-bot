@@ -25,7 +25,7 @@ func TestApiSender_Send_OK(t *testing.T) {
 	).ParamPresent("random_id").Reply(http.StatusOK)
 
 	sender := ApiSender{Token: "token"}
-	sender.send(1, "msg")
+	sender.Send(1, "msg")
 	assert.False(t, gock.HasUnmatchedRequest())
 }
 
@@ -39,7 +39,7 @@ func TestApiSender_Send_NotOK(t *testing.T) {
 		Token:  "token",
 		Logger: log.New(b, "", 0),
 	}
-	sender.send(1, "msg")
+	sender.Send(1, "msg")
 	assert.True(t, strings.Contains(b.String(), "[error]"))
 }
 
@@ -60,6 +60,6 @@ func TestApiSender_Send_ErrorCode(t *testing.T) {
 		Token:  "token",
 		Logger: log.New(b, "", 0),
 	}
-	sender.send(1, "msg")
+	sender.Send(1, "msg")
 	assert.True(t, strings.Contains(b.String(), "[error]"))
 }

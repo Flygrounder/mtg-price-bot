@@ -1,4 +1,4 @@
-package vk
+package scenario
 
 import (
 	"errors"

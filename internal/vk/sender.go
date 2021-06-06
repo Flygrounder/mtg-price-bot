@@ -31,7 +31,7 @@ type errorResponse struct {
 	ErrorMsg  string `json:"error_msg"`
 }
 
-func (s *ApiSender) send(userId int64, message string) {
+func (s *ApiSender) Send(userId int64, message string) {
 	randomId := rand.Int63()
 	params := []string{
 		"access_token=" + s.Token,
