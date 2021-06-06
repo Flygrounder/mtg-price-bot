@@ -19,7 +19,7 @@ func (s *Sender) SendPrices(userId int64, cardName string, prices []cardsinfo.Sc
 func (h *Sender) Send(userId int64, message string) {
 	msg := tgbotapi.NewMessage(userId, message)
 	msg.DisableWebPagePreview = true
-	msg.ParseMode = "MarkdownV2"
+	msg.ParseMode = tgbotapi.ModeMarkdown
 	h.API.Send(msg)
 }
 
