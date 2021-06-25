@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"fmt"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
@@ -24,7 +25,8 @@ func (h *Sender) Send(userId int64, message string) {
 }
 
 func formatCardPrices(name string, prices []cardsinfo.ScgCardPrice) string {
-	message := fmt.Sprintf("Оригинальное название: %v\n\n", name)
+	escapedName := strings.ReplaceAll(name, "_", "\\_")
+	message := fmt.Sprintf("Оригинальное название: %v\n\n", escapedName)
 	for i, v := range prices {
 		message += fmt.Sprintf("%v. %v", i+1, formatPrice(v))
 	}

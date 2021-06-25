@@ -23,3 +23,9 @@ func Test_formatCardPrices(t *testing.T) {
 	result := formatCardPrices("card", prices)
 	assert.Equal(t, "Оригинальное название: card\n\n1. [Alpha](scg1): 1\n2. [Beta](scg2): 2\n", result)
 }
+
+func Test_formatCardPricesEscapeUnderscore(t *testing.T) {
+	prices := []cardsinfo.ScgCardPrice{}
+	result := formatCardPrices("_____", prices)
+	assert.Equal(t, "Оригинальное название: \\_\\_\\_\\_\\_\n\nЦен не найдено\n", result)
+}
