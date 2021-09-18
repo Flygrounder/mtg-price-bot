@@ -8,7 +8,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
-	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/onsi/ginkgo v1.10.3 // indirect
 	github.com/onsi/gomega v1.7.1 // indirect
 	github.com/pkg/errors v0.9.1
