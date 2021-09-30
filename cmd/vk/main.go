@@ -27,12 +27,14 @@ func main() {
 	dictBytes, _ := ioutil.ReadAll(dict)
 	var dictMap map[string]string
 	_ = json.Unmarshal(dictBytes, &dictMap)
+	logger := log.New(os.Stdout, "", 0)
 	handler := vk.Handler{
 		Scenario: &scenario.Scenario{
 			Sender: &vk.ApiSender{
-				Token: os.Getenv("VK_TOKEN"),
+				Token:  os.Getenv("VK_TOKEN"),
+				Logger: logger,
 			},
-			Logger: log.New(os.Stdout, "", 0),
+			Logger: logger,
 			Cache:  caching.NewClient("redis:6379", "", time.Hour*24, 0),
 			InfoFetcher: &cardsinfo.Fetcher{
 				Dict: dictMap,
