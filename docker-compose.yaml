@@ -1,7 +1,10 @@
 version: "3.3"
 services:
   vk:
-    image: flygrounder/go-mtg-vk:latest
+    build:
+      context: .
+      args: 
+        - VERSION=vk
     environment:
       - VK_TOKEN
       - VK_SECRET_KEY
@@ -12,7 +15,10 @@ services:
       - "127.0.0.1:8888:8000"
     restart: "always"
   telegram:
-      image: flygrounder/go-mtg-telegram:latest
+      build:
+        context: .
+        args:
+          - VERSION=telegram
       environment:
         - TG_TOKEN
       restart: "always"
