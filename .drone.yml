@@ -1,0 +1,32 @@
+---
+type: docker
+kind: pipeline
+name: default
+
+steps:
+- name: Run
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run
+  environment:
+    VK_TOKEN:
+      from_secret: vk_token
+    VK_SECRET_KEY:
+      from_secret: vk_secret_key
+    VK_GROUP_ID:
+      from_secret: vk_group_id
+    VK_CONFIRMATION_STRING:
+      from_secret: vk_confirmation_string
+    TG_TOKEN:
+      from_secret: tg_token
+
+  commands:
+  - apk update
+  - apk add docker-compose
+  - docker-compose -p go-mtg-vk up -d --build
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run
