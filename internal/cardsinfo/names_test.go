@@ -1,10 +1,12 @@
 package cardsinfo
 
 import (
-	"github.com/stretchr/testify/assert"
-	"gopkg.in/h2non/gock.v1"
+	"errors"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"gopkg.in/h2non/gock.v1"
 )
 
 func TestGetNameByCardId(t *testing.T) {
@@ -63,4 +65,13 @@ func TestGetOriginalName_DoubleSide(t *testing.T) {
 	f := &Fetcher{}
 	name := f.GetOriginalName("card")
 	assert.Equal(t, "Legion's Landing | Adanto, the First Fort", name)
+}
+
+func TestGetOriginalName_Error(t *testing.T) {
+	defer gock.Off()
+
+	gock.New(scryfallUrl + "/cards/named?fuzzy=card").ReplyError(errors.New("internal server error"))
+	f := &Fetcher{}
+	name := f.GetOriginalName("card")
+	assert.Equal(t, "", name)
 }

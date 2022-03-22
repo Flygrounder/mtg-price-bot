@@ -2,11 +2,12 @@ package cardsinfo
 
 import (
 	"encoding/json"
-	"gitlab.com/flygrounder/go-mtg-vk/internal/dicttranslate"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"gitlab.com/flygrounder/go-mtg-vk/internal/dicttranslate"
 )
 
 const scryfallUrl = "https://api.scryfall.com"
@@ -38,13 +39,16 @@ func applyFilters(name string) string {
 }
 
 func getCardByUrl(path string) string {
-	response, _ := http.Get(path)
+	response, err := http.Get(path)
+	if err != nil {
+		return ""
+	}
 	defer func() {
 		_ = response.Body.Close()
 	}()
 	data, _ := ioutil.ReadAll(response.Body)
 	var v card
-	err := json.Unmarshal(data, &v)
+	err = json.Unmarshal(data, &v)
 	if err != nil {
 		return ""
 	}
