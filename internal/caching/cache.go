@@ -3,7 +3,6 @@ package caching
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"path"
 	"time"
 
@@ -86,7 +85,6 @@ func (client *CacheClient) Get(ctx context.Context, key string) ([]cardsinfo.Scg
 		return err
 	})
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil, errors.Wrap(err, "Failed to get key")
 	}
 	var prices []cardsinfo.ScgCardPrice
