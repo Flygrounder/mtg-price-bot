@@ -1,10 +1,7 @@
 version: "3.3"
 services:
-  vk:
-    build:
-      context: .
-      args: 
-        - VERSION=vk
+  bot:
+    build: .
     environment:
       - YDB_CONNECTION_STRING
       - YDB_ACCESS_TOKEN_CREDENTIALS
@@ -12,17 +9,8 @@ services:
       - VK_SECRET_KEY
       - VK_GROUP_ID
       - VK_CONFIRMATION_STRING
+      - TG_TOKEN
 
     ports:
       - "127.0.0.1:8888:8000"
-    restart: "always"
-  telegram:
-      build:
-        context: .
-        args:
-          - VERSION=telegram
-      environment:
-        - YDB_CONNECTION_STRING
-        - YDB_ACCESS_TOKEN_CREDENTIALS
-        - TG_TOKEN
-      restart: "always"
+    restart: "unless-stopped"
