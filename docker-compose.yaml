@@ -6,6 +6,8 @@ services:
       args: 
         - VERSION=vk
     environment:
+      - YDB_CONNECTION_STRING
+      - YDB_ACCESS_TOKEN_CREDENTIALS
       - VK_TOKEN
       - VK_SECRET_KEY
       - VK_GROUP_ID
@@ -20,8 +22,7 @@ services:
         args:
           - VERSION=telegram
       environment:
+        - YDB_CONNECTION_STRING
+        - YDB_ACCESS_TOKEN_CREDENTIALS
         - TG_TOKEN
       restart: "always"
-  redis:
-    image: "redis:6.0.9"
-    restart: "always"

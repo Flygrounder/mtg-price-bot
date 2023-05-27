@@ -31,21 +31,6 @@ func TestGetOriginalName_Scryfall(t *testing.T) {
 	assert.Equal(t, "Result Card", name)
 }
 
-func TestGetOriginalName_DictTwice(t *testing.T) {
-	defer gock.Off()
-
-	gock.New(scryfallUrl + "/cards/named?fuzzy=card").Persist().Reply(http.StatusOK).JSON(card{})
-	f := &Fetcher{
-		Dict: map[string]string{
-			"card": "Card",
-		},
-	}
-	name := f.GetOriginalName("card")
-	assert.Equal(t, "Card", name)
-	name = f.GetOriginalName("card")
-	assert.Equal(t, "Card", name)
-}
-
 func TestGetOriginalName_BadJson(t *testing.T) {
 	defer gock.Off()
 

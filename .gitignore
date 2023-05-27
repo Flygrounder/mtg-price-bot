@@ -4,3 +4,7 @@ hosts
 .idea
 .venv
 coverage.out
+.envrc
+/my_token
+/vk
+/telegram

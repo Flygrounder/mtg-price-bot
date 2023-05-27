@@ -1,7 +1,9 @@
 package scenario
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -27,8 +29,9 @@ type UserMessage struct {
 }
 
 type CardCache interface {
-	Get(cardName string) ([]cardsinfo.ScgCardPrice, error)
-	Set(cardName string, prices []cardsinfo.ScgCardPrice)
+	Init(ctx context.Context) error
+	Get(ctx context.Context, cardName string) ([]cardsinfo.ScgCardPrice, error)
+	Set(ctx context.Context, cardName string, prices []cardsinfo.ScgCardPrice) error
 }
 
 type CardInfoFetcher interface {
@@ -42,7 +45,7 @@ type Sender interface {
 	SendPrices(userId int64, cardName string, prices []cardsinfo.ScgCardPrice)
 }
 
-func (s *Scenario) HandleSearch(msg *UserMessage) {
+func (s *Scenario) HandleSearch(ctx context.Context, msg *UserMessage) {
 	cardName, err := s.getCardNameByCommand(msg.Body)
 	if err != nil {
 		s.Sender.Send(msg.UserId, incorrectMessage)
@@ -51,7 +54,7 @@ func (s *Scenario) HandleSearch(msg *UserMessage) {
 		s.Sender.Send(msg.UserId, cardNotFoundMessage)
 		s.Logger.Printf("[info] Could not find card. User input: %s", msg.Body)
 	} else {
-		prices, err := s.Cache.Get(cardName)
+		prices, err := s.Cache.Get(ctx, cardName)
 		if err == nil {
 			s.Sender.SendPrices(msg.UserId, cardName, prices)
 			return
@@ -62,7 +65,10 @@ func (s *Scenario) HandleSearch(msg *UserMessage) {
 			s.Logger.Printf("[error] Could not find SCG prices. Message: %s card name: %s", err.Error(), cardName)
 			return
 		}
-		s.Cache.Set(cardName, prices)
+		err = s.Cache.Set(ctx, cardName, prices)
+		if err != nil {
+			s.Logger.Println(fmt.Errorf("failed add entry in cache: %w", err))
+		}
 		s.Sender.SendPrices(msg.UserId, cardName, prices)
 	}
 }

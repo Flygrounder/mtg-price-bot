@@ -20,6 +20,10 @@ steps:
       from_secret: vk_confirmation_string
     TG_TOKEN:
       from_secret: tg_token
+    YDB_CONNECTION_STRING:
+      from_secret: ydb_connection_string
+    YDB_ACCESS_TOKEN_CREDENTIALS:
+      from_secret: ydb_access_token_credentials
 
   commands:
   - apk update

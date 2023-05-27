@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"gitlab.com/flygrounder/go-mtg-vk/internal/dicttranslate"
 )
 
 const scryfallUrl = "https://api.scryfall.com"
@@ -23,9 +21,6 @@ func (f *Fetcher) GetNameByCardId(set string, number string) string {
 func (f *Fetcher) GetOriginalName(name string) string {
 	path := scryfallUrl + "/cards/named?fuzzy=" + applyFilters(name)
 	result := getCardByUrl(path)
-	if result == "" && f.Dict != nil {
-		result, _ = dicttranslate.Find(name, f.Dict, 5)
-	}
 	return result
 }
 

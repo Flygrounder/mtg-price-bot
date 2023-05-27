@@ -1,6 +1,7 @@
 package scenario
 
 import (
+	"context"
 	"strings"
 	"testing"
 
@@ -9,7 +10,7 @@ import (
 
 func TestScenario_HandleSearch_BadCommand(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
-	testCtx.Scenario.HandleSearch(&UserMessage{
+	testCtx.Scenario.HandleSearch(context.Background(), &UserMessage{
 		Body:   "!s",
 		UserId: 1,
 	})
@@ -24,7 +25,7 @@ func TestScenario_HandleSearch_BadCommand(t *testing.T) {
 
 func TestScenario_HandleSearch_GoodCommand(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
-	testCtx.Scenario.HandleSearch(&UserMessage{
+	testCtx.Scenario.HandleSearch(context.Background(), &UserMessage{
 		Body:   "!s grn 228",
 		UserId: 1,
 	})
@@ -38,7 +39,7 @@ func TestScenario_HandleSearch_GoodCommand(t *testing.T) {
 
 func TestScenario_HandleSearch_NotFoundCard(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
-	testCtx.Scenario.HandleSearch(&UserMessage{
+	testCtx.Scenario.HandleSearch(context.Background(), &UserMessage{
 		Body:   "absolutely_random_card",
 		UserId: 1,
 	})
@@ -53,7 +54,7 @@ func TestScenario_HandleSearch_NotFoundCard(t *testing.T) {
 
 func TestScenario_HandleSearch_BadCard(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
-	testCtx.Scenario.HandleSearch(&UserMessage{
+	testCtx.Scenario.HandleSearch(context.Background(), &UserMessage{
 		Body:   "bad",
 		UserId: 1,
 	})
@@ -67,7 +68,7 @@ func TestScenario_HandleSearch_BadCard(t *testing.T) {
 }
 func TestScenario_HandleSearch_Uncached(t *testing.T) {
 	testCtx := GetTestScenarioCtx()
-	testCtx.Scenario.HandleSearch(&UserMessage{
+	testCtx.Scenario.HandleSearch(context.Background(), &UserMessage{
 		Body:   "uncached",
 		UserId: 1,
 	})
@@ -77,6 +78,6 @@ func TestScenario_HandleSearch_Uncached(t *testing.T) {
 			message: "uncached",
 		},
 	}, testCtx.Sender.sent)
-	_, err := testCtx.Scenario.Cache.Get("uncached")
+	_, err := testCtx.Scenario.Cache.Get(context.Background(), "uncached")
 	assert.Nil(t, err)
 }

@@ -1,6 +1,7 @@
 package vk
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +9,7 @@ import (
 )
 
 type Handler struct {
-	Scenario *scenario.Scenario
+	Scenario           *scenario.Scenario
 	SecretKey          string
 	GroupId            int64
 	ConfirmationString string
@@ -54,7 +55,7 @@ func (h *Handler) HandleMessage(c *gin.Context) {
 	case "confirmation":
 		h.handleConfirmation(c, &req)
 	case "message_new":
-		go h.Scenario.HandleSearch(&scenario.UserMessage{
+		go h.Scenario.HandleSearch(context.Background(), &scenario.UserMessage{
 			Body:   req.Object.Body,
 			UserId: req.Object.UserId,
 		})
