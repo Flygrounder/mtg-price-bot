@@ -28,6 +28,7 @@ type config struct {
 	vkToken              string
 	vkConfirmationString string
 	ydbConnectionString  string
+	port                 string
 }
 
 func getConfig() *config {
@@ -67,6 +68,11 @@ func getConfig() *config {
 	cfg.ydbConnectionString, exists = os.LookupEnv("YDB_CONNECTION_STRING")
 	if !exists {
 		panic("YDB_CONNECTION_STRING environment variable not defined")
+	}
+
+	cfg.port, exists = os.LookupEnv("PORT")
+	if !exists {
+		panic("PORT environment variable not defined")
 	}
 
 	return &cfg
@@ -132,5 +138,5 @@ func main() {
 
 	r.POST("vk", handler.HandleMessage)
 	r.POST("tg", tgHandler.HandleMessage)
-	_ = r.Run(":8000")
+	_ = r.Run(":" + cfg.port)
 }

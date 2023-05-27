@@ -10,6 +10,7 @@ services:
       - VK_GROUP_ID
       - VK_CONFIRMATION_STRING
       - TG_TOKEN
+      - PORT=8000
 
     ports:
       - "127.0.0.1:8888:8000"
