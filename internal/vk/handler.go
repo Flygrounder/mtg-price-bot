@@ -55,7 +55,7 @@ func (h *Handler) HandleMessage(c *gin.Context) {
 	case "confirmation":
 		h.handleConfirmation(c, &req)
 	case "message_new":
-		go h.Scenario.HandleSearch(context.Background(), &scenario.UserMessage{
+		h.Scenario.HandleSearch(context.Background(), &scenario.UserMessage{
 			Body:   req.Object.Body,
 			UserId: req.Object.UserId,
 		})
