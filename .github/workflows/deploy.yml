@@ -1,14 +1,27 @@
-- name: Login to Yandex Cloud Container Registry
-  id: login-cr
-  uses: yc-actions/yc-cr-login@v2
-  with:
-    yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+name: Push To Yandex Cloud CR
+on:
+  push:
+    branches:
+      - 'master'
 
-- name: Build, tag, and push image to Yandex Cloud Container Registry
-  env:
-    CR_REGISTRY: crp1s2dst54hvi8588to
-    CR_REPOSITORY: mtg-price-bot
-    IMAGE_TAG: latest
-  run: |
-    docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
-    docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: crp1s2dst54hvi8588to
+          CR_REPOSITORY: mtg-price-bot
+          IMAGE_TAG: latest
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
