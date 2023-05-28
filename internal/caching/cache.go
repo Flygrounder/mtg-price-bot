@@ -3,12 +3,14 @@ package caching
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"path"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/options"
+	"github.com/ydb-platform/ydb-go-sdk/v3/table/result"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/result/named"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/types"
 	"gitlab.com/flygrounder/go-mtg-vk/internal/cardsinfo"
@@ -45,8 +47,8 @@ func (client *CacheClient) Set(ctx context.Context, key string, prices []cardsin
 
 	INSERT INTO cache SELECT cd.card AS card, cd.prices AS prices, cd.created_at AS created_at FROM AS_TABLE($cacheData) cd LEFT OUTER JOIN cache c ON cd.card = c.card WHERE c.card IS NULL`
 	value, _ := json.Marshal(prices)
-	return client.Storage.Do(ctx, func(ctx context.Context, s table.Session) error {
-		_, _, err := s.Execute(ctx, writeTx(), query, table.NewQueryParameters(
+	return client.Storage.Do(ctx, func(ctx context.Context, s table.Session) (err error) {
+		_, _, err = s.Execute(ctx, writeTx(), query, table.NewQueryParameters(
 			table.ValueParam("$cacheData", types.ListValue(
 				types.StructValue(
 					types.StructFieldValue("card", types.StringValueFromString(key)),
@@ -54,7 +56,7 @@ func (client *CacheClient) Set(ctx context.Context, key string, prices []cardsin
 					types.StructFieldValue("created_at", types.TimestampValueFromTime(time.Now())),
 				))),
 		))
-		return err
+		return
 	})
 }
 
@@ -64,31 +66,32 @@ func (client *CacheClient) Get(ctx context.Context, key string) ([]cardsinfo.Scg
 
 	SELECT UNWRAP(prices) AS prices FROM cache WHERE card = $card`
 	var pricesStr string
-	err := client.Storage.Do(ctx, func(ctx context.Context, s table.Session) error {
-		_, res, err := s.Execute(ctx, readTx(), query, table.NewQueryParameters(
+	var res result.Result
+	err := client.Storage.Do(ctx, func(ctx context.Context, s table.Session) (err error) {
+		_, res, err = s.Execute(ctx, readTx(), query, table.NewQueryParameters(
 			table.ValueParam("$card", types.StringValueFromString(key)),
 		))
-		if err != nil {
-			return err
-		}
-		ok := res.NextResultSet(ctx)
-		if !ok {
-			return errors.New("no key")
-		}
-		ok = res.NextRow()
-		if !ok {
-			return errors.New("no key")
-		}
-		err = res.ScanNamed(
-			named.Required("prices", &pricesStr),
-		)
-		return err
+		return
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to get key")
 	}
+	ok := res.NextResultSet(ctx)
+	if !ok {
+		return nil, errors.New("no key")
+	}
+	ok = res.NextRow()
+	if !ok {
+		return nil, errors.New("no key")
+	}
+	err = res.ScanNamed(
+		named.Required("prices", &pricesStr),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to scan prices: %w", err)
+	}
 	var prices []cardsinfo.ScgCardPrice
-	json.Unmarshal([]byte(pricesStr), &prices)
+	_ = json.Unmarshal([]byte(pricesStr), &prices)
 	return prices, nil
 }
 
