@@ -21,7 +21,30 @@ jobs:
         env:
           CR_REGISTRY: crp1s2dst54hvi8588to
           CR_REPOSITORY: mtg-price-bot
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy Serverless Container
+        id: deploy-sls-container
+        uses: yc-actions/yc-sls-container-deploy@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          container-name: mtg-price-bot
+          folder-id: b1gcl15ep29573s3s3b0
+          revision-service-account-id: ajet8gg42gudglvakl8e
+          revision-cores: 1
+          revision-memory: 128Mb
+          revision-core-fraction: 100
+          revision-concurrency: 1
+          revision-image-url: cr.yandex/crp1s2dst54hvi8588to/mtg-price-bot:${{ github.sha }}
+          revision-execution-timeout: 10
+          revision-env: |
+            YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gt05asi0tqmjs5pfv4/etn2d3t1h65d06qt14nn
+          revision-secrets: |
+            TG_TOKEN=mtg-price-bot/e6qhd4054c6fudu05uqu/TG_TOKEN
+            VK_SECRET_KEY=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_SECRET_KEY
+            VK_GROUP_ID=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_GROUP_ID
+            VK_TOKEN=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_TOKEN
+            VK_CONFIRMATION_STRING=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_CONFIRMATION_STRING
