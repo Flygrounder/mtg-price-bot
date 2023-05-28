@@ -5,7 +5,7 @@ on:
       - 'master'
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,8 +43,8 @@ jobs:
           revision-env: |
             YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gt05asi0tqmjs5pfv4/etn2d3t1h65d06qt14nn
           revision-secrets: |
-            TG_TOKEN=mtg-price-bot/e6qhd4054c6fudu05uqu/TG_TOKEN
-            VK_SECRET_KEY=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_SECRET_KEY
-            VK_GROUP_ID=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_GROUP_ID
-            VK_TOKEN=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_TOKEN
-            VK_CONFIRMATION_STRING=mtg-price-bot/e6qhd4054c6fudu05uqu/VK_CONFIRMATION_STRING
+            TG_TOKEN=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/TG_TOKEN
+            VK_SECRET_KEY=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_SECRET_KEY
+            VK_GROUP_ID=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_GROUP_ID
+            VK_TOKEN=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_TOKEN
+            VK_CONFIRMATION_STRING=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_CONFIRMATION_STRING
