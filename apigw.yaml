@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: MTG Price Bot
+  version: 1.0.0
+servers:
+- url: https://d5d4b4ik3cqciso6et77.apigw.yandexcloud.net
+paths:
+  /vk:
+    post:
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbadgr0nalljvl22uso7
+        service_account_id: ajet8gg42gudglvakl8e
+  /tg:
+    post:
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbadgr0nalljvl22uso7
+        service_account_id: ajet8gg42gudglvakl8e

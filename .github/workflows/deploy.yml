@@ -43,8 +43,17 @@ jobs:
           revision-env: |
             YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gt05asi0tqmjs5pfv4/etn2d3t1h65d06qt14nn
           revision-secrets: |
-            TG_TOKEN=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/TG_TOKEN
-            VK_SECRET_KEY=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_SECRET_KEY
-            VK_GROUP_ID=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_GROUP_ID
-            VK_TOKEN=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_TOKEN
-            VK_CONFIRMATION_STRING=e6qifetf07j8uiol8mg8/e6qhd4054c6fudu05uqu/VK_CONFIRMATION_STRING
+            TG_TOKEN=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/TG_TOKEN
+            VK_SECRET_KEY=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_SECRET_KEY
+            VK_GROUP_ID=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_GROUP_ID
+            VK_TOKEN=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_TOKEN
+            VK_CONFIRMATION_STRING=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_CONFIRMATION_STRING
+
+      - name: Deploy API Gateway
+        id: deploy-gateway
+        uses: yc-actions/yc-api-gateway-deploy@v2.0.0
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          gateway-name: mtg-price-bot
+          folder-id: b1gcl15ep29573s3s3b0
+          spec-file: apigw.yaml
