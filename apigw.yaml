@@ -3,17 +3,17 @@ info:
   title: MTG Price Bot
   version: 1.0.0
 servers:
-- url: https://d5d4b4ik3cqciso6et77.apigw.yandexcloud.net
+- url: https://d5dv3vf1vap43u1ntal1.apigw.yandexcloud.net
 paths:
   /vk:
     post:
       x-yc-apigateway-integration:
         type: serverless_containers
-        container_id: bbadgr0nalljvl22uso7
-        service_account_id: ajet8gg42gudglvakl8e
+        container_id: bbas46c2ost7vshid40k
+        service_account_id: ajeomjp59v0jb9uiiq3k
   /tg:
     post:
       x-yc-apigateway-integration:
         type: serverless_containers
-        container_id: bbadgr0nalljvl22uso7
-        service_account_id: ajet8gg42gudglvakl8e
+        container_id: bbas46c2ost7vshid40k
+        service_account_id: ajeomjp59v0jb9uiiq3k

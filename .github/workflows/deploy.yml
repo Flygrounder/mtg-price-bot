@@ -19,7 +19,7 @@ jobs:
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
-          CR_REGISTRY: crp1s2dst54hvi8588to
+          CR_REGISTRY: crp7gp50nf1pitkpk3hq
           CR_REPOSITORY: mtg-price-bot
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -32,22 +32,22 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           container-name: mtg-price-bot
-          folder-id: b1gcl15ep29573s3s3b0
-          revision-service-account-id: ajet8gg42gudglvakl8e
+          folder-id: b1g97q1g0epou1o6bu24
+          revision-service-account-id: ajeomjp59v0jb9uiiq3k
           revision-cores: 1
           revision-memory: 128Mb
           revision-core-fraction: 100
           revision-concurrency: 1
-          revision-image-url: cr.yandex/crp1s2dst54hvi8588to/mtg-price-bot:${{ github.sha }}
+          revision-image-url: cr.yandex/crp7gp50nf1pitkpk3hq/mtg-price-bot:${{ github.sha }}
           revision-execution-timeout: 10
           revision-env: |
-            YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gt05asi0tqmjs5pfv4/etn2d3t1h65d06qt14nn
+            YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gofbt3bqdgf7fash84/etnp6sprstj3c6k8n34s
           revision-secrets: |
-            TG_TOKEN=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/TG_TOKEN
-            VK_SECRET_KEY=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_SECRET_KEY
-            VK_GROUP_ID=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_GROUP_ID
-            VK_TOKEN=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_TOKEN
-            VK_CONFIRMATION_STRING=e6qifetf07j8uiol8mg8/e6qe5k71la41vhgef0dc/VK_CONFIRMATION_STRING
+            TG_TOKEN=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/TG_TOKEN
+            VK_SECRET_KEY=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_SECRET_KEY
+            VK_GROUP_ID=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_GROUP_ID
+            VK_TOKEN=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_TOKEN
+            VK_CONFIRMATION_STRING=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_CONFIRMATION_STRING
 
       - name: Deploy API Gateway
         id: deploy-gateway
@@ -55,5 +55,5 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           gateway-name: mtg-price-bot
-          folder-id: b1gcl15ep29573s3s3b0
+          folder-id: b1g97q1g0epou1o6bu24
           spec-file: apigw.yaml
