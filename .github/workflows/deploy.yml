@@ -1,5 +1,6 @@
 name: Push To Yandex Cloud CR
 on:
+  pull_request:
   push:
     branches:
       - 'master'
@@ -29,6 +30,9 @@ jobs:
       - name: Deploy Serverless Container
         id: deploy-sls-container
         uses: yc-actions/yc-sls-container-deploy@v2
+        env:
+          secret: e6qb3muh98m0as2r1r4b
+          revision: e6q2tsf58jo5qtpjqkf5
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           container-name: mtg-price-bot
@@ -40,14 +44,14 @@ jobs:
           revision-concurrency: 1
           revision-image-url: cr.yandex/crp7gp50nf1pitkpk3hq/mtg-price-bot:${{ github.sha }}
           revision-execution-timeout: 10
-          revision-env: |
-            YDB_CONNECTION_STRING=grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gofbt3bqdgf7fash84/etnp6sprstj3c6k8n34s
           revision-secrets: |
-            TG_TOKEN=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/TG_TOKEN
-            VK_SECRET_KEY=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_SECRET_KEY
-            VK_GROUP_ID=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_GROUP_ID
-            VK_TOKEN=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_TOKEN
-            VK_CONFIRMATION_STRING=e6qb3muh98m0as2r1r4b/e6q6lnhd66itrki6ao0s/VK_CONFIRMATION_STRING
+            TELOXIDE_TOKEN=$secret/$revision/TELOXIDE_TOKEN
+            VK_TOKEN=$secret/$revision/VK_TOKEN
+            VK_GROUP_ID=$secret/$revision/VK_GROUP_ID
+            VK_SECRET=$secret/$revision/VK_SECRET
+            VK_CONFIRMATION_STRING=$secret/$revision/VK_CONFIRMATION_STRING
+            TG_SECRET=$secret/$revision/TG_SECRET
+            SCG_CLIENT_GUID=$secret/$revision/SCG_CLIENT_GUID
 
       - name: Deploy API Gateway
         id: deploy-gateway
