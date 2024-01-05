@@ -1,9 +1,2 @@
-vendor
-*.swp
-hosts
-.idea
-.venv
-coverage.out
-.envrc
-/my_token
-/bot
+/target
+.env
