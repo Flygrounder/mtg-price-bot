@@ -740,9 +740,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.10.5"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
 dependencies = [
  "either",
 ]
@@ -1226,9 +1226,9 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "scryfall"
-version = "0.14.2"
+version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0cd4eeb4ef853b9a5de6ed255a1d91820ee7659f3010e756a0b25ddac9d9d7c6"
+checksum = "347ff5e853d4846011e562a2aed63303d079f71a89801a37ab105ed81ddeab1e"
 dependencies = [
  "async-trait",
  "cfg-if",
@@ -1236,7 +1236,7 @@ dependencies = [
  "futures",
  "heck",
  "httpstatus",
- "itertools 0.10.5",
+ "itertools 0.12.1",
  "once_cell",
  "percent-encoding",
  "reqwest",
