@@ -1,14 +1,16 @@
 # MTG price bot
+EN | [RU](/README_RU.md)  
+
 ![Logo](/Logo.jpg)
 
-Бот в ВК: https://vk.com/mtg_vk_bot   
-Бот в Telegram: https://t.me/MtgScgBot  
+VK bot: https://vk.com/mtg_vk_bot   
+Telegram bot: https://t.me/MtgScgBot  
 
-Ищите цены на карты MTG с сайта http://www.starcitygames.com/ не выходя из вашего любимого мессенджера.  
-Не нужно учить никаких команд, просто отправьте боту название карты на любом языке и он предложит вам цены на разные издания этой карты.  
-  
-Если же вы хотите искать карты ещё быстрее, то воспользуйтесь командой  
+Search prices for MTG cards from http://www.starcitygames.com/ without leaving your favourite messenger.  
+No need to learn bot commands, just send it a card name in any language and it will find prices for different printings of that card.  
+
+To find cards even more quickly, use command  
 !s XXX YYY  
-XXX - короткий код издания  
-YYY - коллекционный номер карты  
-Они расположены в нижнем левом углу карты  
+XXX - set number  
+YYY - collectors number  
+You can find them in the bottom left corner of a card.
