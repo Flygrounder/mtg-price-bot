@@ -3,6 +3,7 @@ use axum::extract::State;
 use axum::http::{HeaderMap, StatusCode};
 use axum::routing::post;
 use axum::{Json, Router};
+use dotenv;
 use regex::Regex;
 use scryfall::card::Card;
 use serde::{Deserialize, Serialize};
@@ -442,6 +443,7 @@ async fn report_error<T: MessageSender>(sender: &T, chat_id: i64, err: anyhow::E
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    dotenv::dotenv().unwrap();
     let port = env::var("PORT")
         .ok()
         .and_then(|x| x.parse().ok())
