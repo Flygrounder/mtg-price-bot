@@ -443,7 +443,7 @@ async fn report_error<T: MessageSender>(sender: &T, chat_id: i64, err: anyhow::E
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    dotenv::dotenv().unwrap();
+    dotenv::dotenv().ok();
     let port = env::var("PORT")
         .ok()
         .and_then(|x| x.parse().ok())
