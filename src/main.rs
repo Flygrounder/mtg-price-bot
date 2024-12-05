@@ -63,8 +63,7 @@ async fn request_card_from_scryfall(
         .header("User-Agent", "mtg-price-bot")
         .header("Accept", "*/*")
         .send()
-        .await
-        .context("failed to get card by fuzzy name")?
+        .await?
         .json()
         .await?;
     Ok(card)
@@ -273,8 +272,7 @@ impl Display for ErrorContext {
 async fn handle_telegram_message(state: &AppState, chat_id: i64, message: &str) -> Result<()> {
     let name = get_card_name(message)
         .await
-        .context(ErrorContext::Scryfall)
-        .unwrap();
+        .context(ErrorContext::Scryfall)?;
     let prices = state
         .price_fetcher
         .get_card_prices(&name)
