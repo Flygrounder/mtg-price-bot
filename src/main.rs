@@ -5,7 +5,6 @@ use axum::routing::post;
 use axum::{Json, Router};
 use dotenv;
 use regex::Regex;
-use scryfall::card::Card;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt::Display;
@@ -25,10 +24,12 @@ struct AppState {
     price_fetcher: Arc<PriceFetcher>,
 }
 
+const SCRYFALL_BASE_URL: &str = "https://api.scryfall.com";
+
 async fn get_card_name(query: &str) -> Result<String> {
     let number_search_regex = Regex::new(r#"^!s (?<set>\w{3}) (?<number>\d+)$"#)
         .context("failed to compile number search regex")?;
-    let name = if let Some(captures) = number_search_regex.captures(query) {
+    let card: ScryfallCard = if let Some(captures) = number_search_regex.captures(query) {
         let set = captures
             .name("set")
             .context("failed to get 'set' value from capture")?
@@ -40,17 +41,38 @@ async fn get_card_name(query: &str) -> Result<String> {
             .as_str()
             .parse()
             .context("failed to parse collector number")?;
-        Card::set_and_number(&set, number)
+        request_card_from_scryfall(&format!("/cards/{set}/{number}"), &[])
             .await
-            .map(|card| card.name)
             .context("failed to get card by set and number")?
     } else {
-        Card::named_fuzzy(query)
+        request_card_from_scryfall("/cards/named", &[("fuzzy", query)])
             .await
-            .map(|card| card.name)
-            .context("failed to find card by it's fuzzy name")?
+            .context("failed to get card by fuzzy name")?
     };
-    Ok(name)
+    Ok(card.name)
+}
+
+async fn request_card_from_scryfall(
+    relative_url: &str,
+    params: &[(&str, &str)],
+) -> Result<ScryfallCard> {
+    let client = reqwest::ClientBuilder::new().build()?;
+    let card = client
+        .get(format!("{SCRYFALL_BASE_URL}{relative_url}"))
+        .query(params)
+        .header("User-Agent", "mtg-price-bot")
+        .header("Accept", "*/*")
+        .send()
+        .await
+        .context("failed to get card by fuzzy name")?
+        .json()
+        .await?;
+    Ok(card)
+}
+
+#[derive(Deserialize)]
+struct ScryfallCard {
+    name: String,
 }
 
 #[derive(Serialize)]
@@ -251,7 +273,8 @@ impl Display for ErrorContext {
 async fn handle_telegram_message(state: &AppState, chat_id: i64, message: &str) -> Result<()> {
     let name = get_card_name(message)
         .await
-        .context(ErrorContext::Scryfall)?;
+        .context(ErrorContext::Scryfall)
+        .unwrap();
     let prices = state
         .price_fetcher
         .get_card_prices(&name)
@@ -417,12 +440,6 @@ impl MessageSender for TelegramClient {
 }
 
 async fn report_error<T: MessageSender>(sender: &T, chat_id: i64, err: anyhow::Error) {
-    if !matches!(
-        err.downcast_ref::<scryfall::Error>(),
-        Some(scryfall::Error::ScryfallError(_))
-    ) {
-        println!("error: {:#}", err);
-    }
     let sent = match err.downcast_ref::<ErrorContext>() {
         Some(ErrorContext::Scryfall) => sender
             .send(chat_id, "Карта не найдена")
