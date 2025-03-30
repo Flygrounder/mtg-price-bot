@@ -26,4 +26,4 @@ jobs:
             sed -i 's/@VK_GROUP_ID@/${{ secrets.VK_GROUP_ID }}/g' .env
             sed -i 's/@VK_CONFIRMATION_STRING@/${{ secrets.VK_CONFIRMATION_STRING }}/g' .env
             sed -i 's/@VK_SECRET@/${{ secrets.VK_SECRET }}/g' .env
-            docker compose up -d
+            docker compose up -d --build
