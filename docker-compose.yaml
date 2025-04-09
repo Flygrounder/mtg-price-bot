@@ -2,12 +2,12 @@ services:
   bot:
     build: .
     environment:
-      - TELOXIDE_TOKEN
-      - VK_TOKEN
-      - VK_GROUP_ID
+      - VK_CONFIRMATION
       - VK_SECRET
-      - VK_CONFIRMATION_STRING
+      - VK_TOKEN
+      - TG_TOKEN
       - TG_SECRET
+      - TG_WEBHOOK_URL
       - SCG_CLIENT_GUID
     ports:
-     - 127.0.0.1:3000:3000
+      - 127.0.0.1:3000:3000

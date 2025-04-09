@@ -1,4 +1,4 @@
 set dotenv-load
 
 run:
-    cargo watch -x run
+    go run ./src/main.go
