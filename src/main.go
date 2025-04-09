@@ -54,8 +54,6 @@ func (r *requestHandler) setTelegramWebhook() error {
 		return fmt.Errorf("failed to send webhook request: %w", err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		b, _ := io.ReadAll(resp.Body)
-		r.logger.Println(string(b))
 		return fmt.Errorf("telegram webhook url returned non-ok status: %v", resp.StatusCode)
 	}
 	return nil
@@ -188,8 +186,6 @@ func (r *requestHandler) findOriginalName(query string) (string, error) {
 		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		b, _ := io.ReadAll(resp.Body)
-		r.logger.Println(string(b))
 		err := fmt.Errorf("scryfall returned non-ok status code: %v", resp.StatusCode)
 		if resp.StatusCode != http.StatusNotFound {
 			r.logger.Println(err.Error())
