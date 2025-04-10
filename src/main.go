@@ -63,6 +63,7 @@ func (r *requestHandler) handleTelegramRequest(w http.ResponseWriter, req *http.
 	if req.Header.Get("X-Telegram-Bot-Api-Secret-Token") != os.Getenv("TG_SECRET") {
 		r.logger.Printf("got request with incorrect secret")
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	res, err := io.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -119,6 +120,7 @@ func (r *requestHandler) handleVKRequest(w http.ResponseWriter, req *http.Reques
 	if err != nil {
 		r.logger.Printf("failed to read vk request body: %v", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	event := struct {
 		Type   string `json:"type"`
@@ -132,6 +134,7 @@ func (r *requestHandler) handleVKRequest(w http.ResponseWriter, req *http.Reques
 	if err != nil {
 		r.logger.Printf("failed to unmarshal vk request body: %v", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if event.Secret != os.Getenv("VK_SECRET") {
