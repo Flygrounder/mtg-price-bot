@@ -1,8 +1,7 @@
 FROM golang:1.24.2-alpine3.21 AS builder
 WORKDIR /src/app
-COPY go.mod .
-COPY src/ ./src/
-RUN go build -o mtg-price-bot ./src/main.go
+COPY main.go go.mod ./
+RUN go build -o mtg-price-bot main.go
 
 FROM alpine:3.21
 WORKDIR /root/

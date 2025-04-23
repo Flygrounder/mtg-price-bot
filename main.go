@@ -29,10 +29,9 @@ func run(handler *requestHandler) error {
 		return fmt.Errorf("failed to set telegram webhook: %w", err)
 	}
 	handler.logger.Printf("successfully set telegram webhook")
-	sm := http.NewServeMux()
-	sm.HandleFunc("/tg", handler.handleTelegramRequest)
-	sm.HandleFunc("/vk", handler.handleVKRequest)
-	err = http.ListenAndServe(":3000", sm)
+	http.HandleFunc("/tg", handler.handleTelegramRequest)
+	http.HandleFunc("/vk", handler.handleVKRequest)
+	err = http.ListenAndServe(":3000", nil)
 	if err != nil {
 		return fmt.Errorf("server stopped with error: %w", err)
 	}
@@ -53,6 +52,10 @@ func (r *requestHandler) setTelegramWebhook() error {
 	if err != nil {
 		return fmt.Errorf("failed to send webhook request: %w", err)
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("telegram webhook url returned non-ok status: %v", resp.StatusCode)
 	}
@@ -66,7 +69,6 @@ func (r *requestHandler) handleTelegramRequest(w http.ResponseWriter, req *http.
 		return
 	}
 	res, err := io.ReadAll(req.Body)
-	defer req.Body.Close()
 	if err != nil {
 		r.logger.Printf("error reading request body: %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -143,7 +145,7 @@ func (r *requestHandler) handleVKRequest(w http.ResponseWriter, req *http.Reques
 	}
 
 	if event.Type == "confirmation" {
-		w.Write([]byte(os.Getenv("VK_CONFIRMATION")))
+		_, _ = w.Write([]byte(os.Getenv("VK_CONFIRMATION")))
 		return
 	}
 
@@ -151,7 +153,7 @@ func (r *requestHandler) handleVKRequest(w http.ResponseWriter, req *http.Reques
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	defer w.Write([]byte("ok"))
+	defer func() { _, _ = w.Write([]byte("ok")) }()
 
 	original, err := r.findOriginalName(event.Object.Text)
 	if err != nil {
@@ -188,6 +190,10 @@ func (r *requestHandler) findOriginalName(query string) (string, error) {
 		r.logger.Println(err.Error())
 		return "", err
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode != http.StatusOK {
 		err := fmt.Errorf("scryfall returned non-ok status code: %v", resp.StatusCode)
 		if resp.StatusCode != http.StatusNotFound {
@@ -240,6 +246,11 @@ func (r *requestHandler) findCardPrices(name string) ([]pricedCard, error) {
 		r.logger.Println(err.Error())
 		return nil, err
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
+
 	if resp.StatusCode != http.StatusOK {
 		err := fmt.Errorf("scg returned non-ok status code: %v", resp.StatusCode)
 		r.logger.Println(err.Error())
@@ -321,6 +332,10 @@ func (r *requestHandler) sendTelegramMessage(chatID int64, message string) error
 	if err != nil {
 		return fmt.Errorf("failed to send request to telegram: %w", err)
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("telegram responded with non-ok status code: %v", resp.StatusCode)
 	}
@@ -332,6 +347,10 @@ func (r *requestHandler) sendVKMessage(chatID int64, message string) error {
 	if err != nil {
 		return fmt.Errorf("failed to send vk message request: %w", err)
 	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("when sending message, vk responded with non-ok status code: %v", resp.StatusCode)
 	}
