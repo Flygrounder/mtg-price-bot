@@ -3,7 +3,7 @@ EN | [RU](/README_RU.md)
 
 ![Logo](/Logo.jpg)
 
-VK bot: https://vk.com/mtg_vk_bot   
+VK bot: https://vk.ru/mtg_vk_bot   
 Telegram bot: https://t.me/MtgScgBot  
 
 Search prices for MTG cards from http://www.starcitygames.com/ without leaving your favourite messenger.  

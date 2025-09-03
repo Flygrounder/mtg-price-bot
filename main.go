@@ -343,7 +343,7 @@ func (r *requestHandler) sendTelegramMessage(chatID int64, message string) error
 }
 
 func (r *requestHandler) sendVKMessage(chatID int64, message string) error {
-	resp, err := r.client.Get(fmt.Sprintf("https://api.vk.com/method/messages.send?message=%v&peer_id=%v&access_token=%v&v=5.103&random_id=0", url.QueryEscape(message), chatID, url.QueryEscape(os.Getenv("VK_TOKEN"))))
+	resp, err := r.client.Get(fmt.Sprintf("https://api.vk.ru/method/messages.send?message=%v&peer_id=%v&access_token=%v&v=5.103&random_id=0", url.QueryEscape(message), chatID, url.QueryEscape(os.Getenv("VK_TOKEN"))))
 	if err != nil {
 		return fmt.Errorf("failed to send vk message request: %w", err)
 	}

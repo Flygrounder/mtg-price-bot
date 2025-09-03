@@ -3,7 +3,7 @@
 
 ![Logo](/Logo.jpg)
 
-Бот в ВК: https://vk.com/mtg_vk_bot   
+Бот в ВК: https://vk.ru/mtg_vk_bot   
 Бот в Telegram: https://t.me/MtgScgBot  
 
 Ищите цены на карты MTG с сайта http://www.starcitygames.com/ не выходя из вашего любимого мессенджера.  
